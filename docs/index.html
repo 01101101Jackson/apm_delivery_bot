@@ -25,11 +25,7 @@
             --input-focus: #2563eb;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -39,39 +35,14 @@
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
 
-        header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+        header { text-align: center; margin-bottom: 1.5rem; }
+        h1 { font-size: 1.75rem; color: var(--primary); margin-bottom: 0.25rem; }
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; }
 
-        h1 {
-            font-size: 1.75rem;
-            color: var(--primary);
-            margin-bottom: 0.25rem;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .app-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 1100px) {
-            .app-layout {
-                grid-template-columns: 1fr;
-            }
-        }
+        .app-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 1100px) { .app-layout { grid-template-columns: 1fr; } }
 
         .card {
             background: var(--card-bg);
@@ -86,13 +57,9 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--primary);
-            color: var(--text);
         }
 
-        .form-section {
-            margin-bottom: 1.25rem;
-        }
-
+        .form-section { margin-bottom: 1.25rem; }
         .section-title {
             font-size: 0.8rem;
             font-weight: 600;
@@ -102,23 +69,9 @@
             margin-bottom: 0.6rem;
         }
 
-        .form-group {
-            margin-bottom: 0.75rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 0.3rem;
-            color: var(--text);
-        }
-
-        .label-hint {
-            font-weight: 400;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-        }
+        .form-group { margin-bottom: 0.75rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.3rem; }
+        .label-hint { font-weight: 400; color: var(--text-muted); font-size: 0.75rem; }
 
         input, select {
             width: 100%;
@@ -137,10 +90,13 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
-        input.small-input {
-            padding: 0.35rem 0.5rem;
-            font-size: 0.8rem;
+        input:disabled, input[readonly] {
+            background: var(--bg);
+            color: var(--text-muted);
+            cursor: not-allowed;
         }
+
+        input.small-input { padding: 0.35rem 0.5rem; font-size: 0.8rem; }
 
         select {
             cursor: pointer;
@@ -152,23 +108,8 @@
             padding-right: 2rem;
         }
 
-        .input-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 0.5rem;
-        }
-
-        .input-row-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.5rem;
-        }
-
-        .input-row-4 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 0.5rem;
-        }
+        .input-row { display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; }
+        .input-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
 
         .btn {
             display: inline-flex;
@@ -184,51 +125,18 @@
             transition: all 0.15s;
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            width: 100%;
-        }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+        .btn-secondary:hover { background: var(--border); }
+        .btn-danger { background: var(--danger-light); color: var(--danger); padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-sm { padding: 0.35rem 0.6rem; font-size: 0.8rem; }
 
-        .btn-primary:hover {
-            background: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background: var(--bg);
-            color: var(--text);
-            border: 1.5px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--border);
-        }
-
-        .btn-danger {
-            background: var(--danger-light);
-            color: var(--danger);
-            padding: 0.4rem 0.6rem;
-            font-size: 0.8rem;
-        }
-
-        .btn-danger:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.8rem;
-        }
-
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         /* Resources Section */
-        .resources-container {
-            margin-top: 0.5rem;
-        }
+        .resources-container { margin-top: 0.5rem; }
 
         .resource-card {
             background: var(--bg);
@@ -243,30 +151,46 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.75rem;
+            gap: 0.5rem;
         }
 
-        .resource-title {
+        .resource-name-input {
+            border: 1px solid transparent;
+            background: transparent;
             font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text);
+            font-size: 0.95rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            flex: 1;
+            min-width: 120px;
+            max-width: 200px;
         }
+
+        .resource-name-input:hover { border-color: var(--border); }
+        .resource-name-input:focus { border-color: var(--primary); background: white; }
 
         .resource-inputs {
             display: grid;
-            grid-template-columns: 2fr 1.5fr 1fr 1fr;
+            grid-template-columns: 2fr 1.2fr 1fr;
             gap: 0.5rem;
             align-items: end;
         }
 
         @media (max-width: 600px) {
-            .resource-inputs {
-                grid-template-columns: 1fr 1fr;
-            }
+            .resource-inputs { grid-template-columns: 1fr 1fr; }
         }
 
-        .add-resource-btn {
-            margin-top: 0.5rem;
+        .avg-fte-display {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.5rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
         }
+
+        .add-resource-btn { margin-top: 0.5rem; }
 
         /* Allocation Breakdown */
         .allocation-section {
@@ -285,13 +209,9 @@
             font-weight: 500;
         }
 
-        .allocation-toggle:hover {
-            text-decoration: underline;
-        }
+        .allocation-toggle:hover { text-decoration: underline; }
 
-        .month-breakdown {
-            margin-top: 0.75rem;
-        }
+        .month-breakdown { margin-top: 0.75rem; }
 
         .month-card {
             background: white;
@@ -310,23 +230,10 @@
             border-radius: 6px 6px 0 0;
         }
 
-        .month-header:hover {
-            background: var(--border);
-        }
-
-        .month-title {
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-
-        .month-summary {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .month-fte-input {
-            width: 70px;
-        }
+        .month-header:hover { background: var(--border); }
+        .month-title { font-weight: 500; font-size: 0.85rem; }
+        .month-summary { font-size: 0.8rem; color: var(--text-muted); }
+        .month-fte-input { width: 70px; }
 
         .week-breakdown {
             padding: 0.5rem 0.75rem;
@@ -334,22 +241,9 @@
             border-radius: 0 0 6px 6px;
         }
 
-        .week-row {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.25rem 0;
-        }
-
-        .week-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            width: 60px;
-        }
-
-        .week-input {
-            width: 70px;
-        }
+        .week-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0; }
+        .week-label { font-size: 0.8rem; color: var(--text-muted); width: 60px; }
+        .week-input { width: 70px; }
 
         /* Results Section */
         .apm-display {
@@ -364,18 +258,8 @@
         .apm-display.negative { background: var(--danger-light); }
         .apm-display.break-even { background: var(--warning-light); }
 
-        .apm-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 0.2rem;
-        }
-
-        .apm-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--success);
-        }
-
+        .apm-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.2rem; }
+        .apm-value { font-size: 2rem; font-weight: 700; color: var(--success); }
         .apm-display.negative .apm-value { color: var(--danger); }
         .apm-display.break-even .apm-value { color: var(--warning); }
 
@@ -385,11 +269,7 @@
             border-bottom: 1px solid var(--border);
         }
 
-        .result-section:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
+        .result-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
 
         .result-section-title {
             font-size: 0.8rem;
@@ -407,20 +287,84 @@
             padding: 0.35rem 0;
         }
 
-        .result-label {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
+        .result-label { color: var(--text-muted); font-size: 0.85rem; }
         .result-value {
             font-weight: 600;
             font-size: 0.9rem;
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
         }
 
-        .monthly-breakdown-results {
-            margin-top: 0.75rem;
+        /* Pie Chart */
+        .chart-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
         }
+
+        .pie-chart { position: relative; width: 160px; height: 160px; }
+
+        .chart-legend { display: flex; flex-direction: column; gap: 0.4rem; }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .legend-label { color: var(--text); }
+        .legend-value { color: var(--text-muted); margin-left: auto; font-family: monospace; }
+
+        /* Resource Results Card */
+        .resource-result-card {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-result-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .resource-color-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .resource-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+        .stat-value { font-size: 0.85rem; font-weight: 600; font-family: monospace; }
+
+        .monthly-breakdown-results { margin-top: 0.75rem; }
 
         .monthly-result-row {
             display: grid;
@@ -437,9 +381,7 @@
             border-bottom: 2px solid var(--border);
         }
 
-        .monthly-result-row:last-child {
-            border-bottom: none;
-        }
+        .monthly-result-row:last-child { border-bottom: none; }
 
         .formula-box {
             background: var(--bg);
@@ -458,11 +400,7 @@
             color: var(--primary);
         }
 
-        .placeholder-message {
-            text-align: center;
-            padding: 2rem 1rem;
-            color: var(--text-muted);
-        }
+        .placeholder-message { text-align: center; padding: 2rem 1rem; color: var(--text-muted); }
 
         .error-message {
             background: var(--danger-light);
@@ -473,13 +411,8 @@
             margin-bottom: 0.75rem;
         }
 
-        .chevron {
-            transition: transform 0.2s;
-        }
-
-        .chevron.open {
-            transform: rotate(180deg);
-        }
+        .chevron { transition: transform 0.2s; }
+        .chevron.open { transform: rotate(180deg); }
 
         .tabs {
             display: flex;
@@ -500,21 +433,10 @@
             font-weight: 500;
         }
 
-        .tab.active {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
+        .tab.active { background: var(--primary-light); color: var(--primary); }
+        .tab:hover:not(.active) { background: var(--bg); }
 
-        .tab:hover:not(.active) {
-            background: var(--bg);
-        }
-
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
+        footer { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -573,7 +495,7 @@
                     <div class="form-section">
                         <div class="section-title">Settings</div>
 
-                        <div class="input-row">
+                        <div class="input-row-3">
                             <div class="form-group hidden" id="hours-per-month-group">
                                 <label for="hours-per-month">Hours/Month</label>
                                 <input type="number" id="hours-per-month" min="1" step="1" value="160" required>
@@ -639,12 +561,20 @@
                     <!-- Summary tabs -->
                     <div class="tabs">
                         <button type="button" class="tab active" onclick="showTab('summary')">Summary</button>
-                        <button type="button" class="tab" onclick="showTab('monthly')">Monthly Breakdown</button>
-                        <button type="button" class="tab" onclick="showTab('resources')">By Resource</button>
+                        <button type="button" class="tab" onclick="showTab('monthly')">Monthly</button>
+                        <button type="button" class="tab" onclick="showTab('resources')">Resources</button>
                     </div>
 
                     <!-- Summary Tab -->
                     <div id="tab-summary">
+                        <!-- Pie Chart -->
+                        <div class="chart-container" id="chart-container">
+                            <div class="pie-chart">
+                                <canvas id="pie-chart" width="160" height="160"></canvas>
+                            </div>
+                            <div class="chart-legend" id="chart-legend"></div>
+                        </div>
+
                         <div class="result-section">
                             <div class="result-section-title">Revenue</div>
                             <div class="result-row">
@@ -675,21 +605,21 @@
                                 <span class="result-label">Gross Profit</span>
                                 <span class="result-value" id="gross-profit">--</span>
                             </div>
+                            <div class="result-row">
+                                <span class="result-label">Profit Margin</span>
+                                <span class="result-value" id="remaining-margin">--</span>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Monthly Tab -->
                     <div id="tab-monthly" class="hidden">
-                        <div class="monthly-breakdown-results" id="monthly-results">
-                            <!-- Monthly breakdown will be populated here -->
-                        </div>
+                        <div class="monthly-breakdown-results" id="monthly-results"></div>
                     </div>
 
                     <!-- Resources Tab -->
                     <div id="tab-resources" class="hidden">
-                        <div id="resource-results">
-                            <!-- Resource breakdown will be populated here -->
-                        </div>
+                        <div id="resource-results"></div>
                     </div>
 
                     <div class="formula-box">
@@ -709,38 +639,25 @@
     <script>
         // Exchange rates (Currency -> USD)
         const EXCHANGE_RATES = {
-            USD: 1.0,
-            EUR: 1.08,
-            GBP: 1.27,
-            CHF: 1.13,
-            AUD: 0.65,
-            CAD: 0.74,
-            JPY: 0.0067,
-            SGD: 0.75,
-            INR: 0.012,
-            CNY: 0.14,
+            USD: 1.0, EUR: 1.08, GBP: 1.27, CHF: 1.13, AUD: 0.65,
+            CAD: 0.74, JPY: 0.0067, SGD: 0.75, INR: 0.012, CNY: 0.14,
         };
+
+        // Chart colors
+        const CHART_COLORS = [
+            '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+            '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
+        ];
 
         const WEEKS_PER_MONTH = 4;
         let resourceCounter = 0;
         let resources = [];
 
-        // Currency formatting
+        // Formatting functions
         function formatCurrency(amount, currency) {
             return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-            }).format(amount);
-        }
-
-        function formatCurrencyDetailed(amount, currency) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
+                style: 'currency', currency: currency,
+                minimumFractionDigits: 0, maximumFractionDigits: 0,
             }).format(amount);
         }
 
@@ -748,7 +665,6 @@
             return (value * 100).toFixed(2) + '%';
         }
 
-        // Currency conversion
         function convertToUSD(amount, fromCurrency) {
             return amount * EXCHANGE_RATES[fromCurrency];
         }
@@ -762,7 +678,6 @@
             const revenueType = document.getElementById('revenue-type').value;
             const hoursGroup = document.getElementById('hours-per-month-group');
 
-            // Check if any resource uses hourly
             const hasHourlyResource = resources.some(r => {
                 const periodSelect = document.querySelector(`#resource-${r.id} select[name="period"]`);
                 return periodSelect && periodSelect.value === 'hourly';
@@ -775,7 +690,7 @@
             }
         }
 
-        // Update contract duration visibility and allocation breakdown
+        // Update contract duration visibility
         function updateContractVisibility() {
             const revenueType = document.getElementById('revenue-type').value;
             const durationGroup = document.getElementById('contract-duration-group');
@@ -789,6 +704,47 @@
             updateAllocationBreakdowns();
         }
 
+        // Calculate average FTE for a resource
+        function calculateAverageFTE(resource, contractDuration) {
+            if (!contractDuration || contractDuration <= 0) return 1.0;
+
+            let totalFTE = 0;
+            for (let m = 0; m < contractDuration; m++) {
+                if (resource.monthlyAllocations[m]) {
+                    const alloc = resource.monthlyAllocations[m];
+                    if (alloc.useWeekly) {
+                        totalFTE += alloc.weeks.reduce((a, b) => a + b, 0) / WEEKS_PER_MONTH;
+                    } else {
+                        totalFTE += alloc.fte;
+                    }
+                } else {
+                    totalFTE += 1.0;
+                }
+            }
+            return totalFTE / contractDuration;
+        }
+
+        // Update the average FTE display for a resource
+        function updateAverageFTEDisplay(resourceId) {
+            const resource = resources.find(r => r.id === resourceId);
+            if (!resource) return;
+
+            const revenueType = document.getElementById('revenue-type').value;
+            const contractDuration = parseInt(document.getElementById('contract-duration').value) || 0;
+
+            let avgFTE;
+            if (revenueType === 'fixed_price' && contractDuration > 0) {
+                avgFTE = calculateAverageFTE(resource, contractDuration);
+            } else {
+                avgFTE = 1.0;
+            }
+
+            const display = document.getElementById(`avg-fte-${resourceId}`);
+            if (display) {
+                display.textContent = `${(avgFTE * 100).toFixed(0)}% avg`;
+            }
+        }
+
         // Resource management
         function addResource() {
             const id = ++resourceCounter;
@@ -799,10 +755,10 @@
             const resource = {
                 id,
                 name: `Resource ${id}`,
-                monthlyAllocations: {} // Will store { monthIndex: { fte: number, weeks: [w1, w2, w3, w4] } }
+                color: CHART_COLORS[(id - 1) % CHART_COLORS.length],
+                monthlyAllocations: {}
             };
 
-            // Initialize allocations if we have a duration
             if (showBreakdown) {
                 for (let m = 0; m < contractDuration; m++) {
                     resource.monthlyAllocations[m] = {
@@ -825,6 +781,8 @@
             div.className = 'resource-card';
             div.id = `resource-${resource.id}`;
 
+            const avgFTE = showBreakdown ? calculateAverageFTE(resource, contractDuration) : 1.0;
+
             let allocationHTML = '';
             if (showBreakdown && contractDuration > 0) {
                 allocationHTML = `
@@ -844,16 +802,17 @@
 
             div.innerHTML = `
                 <div class="resource-header">
-                    <input type="text" class="resource-title" name="name" value="${resource.name}"
-                           style="border: none; background: transparent; font-weight: 600; font-size: 0.9rem; width: 150px;"
-                           placeholder="Resource name">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="width: 12px; height: 12px; border-radius: 50%; background: ${resource.color};"></span>
+                        <input type="text" class="resource-name-input" name="name" value="${resource.name}" placeholder="Resource name">
+                    </div>
                     <button type="button" class="btn btn-danger btn-sm" onclick="removeResource(${resource.id})">Remove</button>
                 </div>
                 <div class="resource-inputs">
                     <div class="form-group">
                         <label>Cost Rate</label>
                         <div class="input-row">
-                            <input type="number" name="rate" min="0" step="0.01" required placeholder="e.g., 8000" value="">
+                            <input type="number" name="rate" min="0" step="0.01" required placeholder="e.g., 8000">
                             <select name="currency" required>
                                 <option value="USD" selected>USD</option>
                                 <option value="EUR">EUR</option>
@@ -873,8 +832,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Base FTE <span class="label-hint">(%)</span></label>
-                        <input type="number" name="fte" min="0" max="100" step="1" value="100" required>
+                        <label>Avg FTE</label>
+                        <div class="avg-fte-display" id="avg-fte-${resource.id}">${(avgFTE * 100).toFixed(0)}% avg</div>
                     </div>
                 </div>
                 ${allocationHTML}
@@ -950,7 +909,6 @@
             weeks.classList.toggle('hidden');
             chevron.classList.toggle('open');
 
-            // Mark as using weekly when expanded
             const resource = resources.find(r => r.id === resourceId);
             if (resource && resource.monthlyAllocations[monthIndex]) {
                 resource.monthlyAllocations[monthIndex].useWeekly = !weeks.classList.contains('hidden');
@@ -969,11 +927,9 @@
 
             resource.monthlyAllocations[monthIndex].fte = fte;
 
-            // Update all weeks to match if not using weekly breakdown
             if (!resource.monthlyAllocations[monthIndex].useWeekly) {
                 resource.monthlyAllocations[monthIndex].weeks = [fte, fte, fte, fte];
 
-                // Update week inputs
                 const weeksContainer = document.getElementById(`weeks-${resourceId}-${monthIndex}`);
                 if (weeksContainer) {
                     const inputs = weeksContainer.querySelectorAll('.week-input');
@@ -981,11 +937,12 @@
                 }
             }
 
-            // Update summary
             const summary = document.getElementById(`month-summary-${resourceId}-${monthIndex}`);
             if (summary) {
                 summary.textContent = `FTE: ${(fte * 100).toFixed(0)}%`;
             }
+
+            updateAverageFTEDisplay(resourceId);
         }
 
         function updateWeekFTE(resourceId, monthIndex, weekIndex, value) {
@@ -1001,12 +958,10 @@
             resource.monthlyAllocations[monthIndex].weeks[weekIndex] = fte;
             resource.monthlyAllocations[monthIndex].useWeekly = true;
 
-            // Update month average
             const weeks = resource.monthlyAllocations[monthIndex].weeks;
             const avgFte = weeks.reduce((a, b) => a + b, 0) / weeks.length;
             resource.monthlyAllocations[monthIndex].fte = avgFte;
 
-            // Update month input and summary
             const monthCard = document.getElementById(`month-${resourceId}-${monthIndex}`);
             if (monthCard) {
                 const monthInput = monthCard.querySelector('.month-fte-input');
@@ -1014,6 +969,8 @@
                 if (monthInput) monthInput.value = (avgFte * 100).toFixed(0);
                 if (summary) summary.textContent = `FTE: ${(avgFte * 100).toFixed(0)}%`;
             }
+
+            updateAverageFTEDisplay(resourceId);
         }
 
         function updateAllocationBreakdowns() {
@@ -1022,7 +979,6 @@
             const showBreakdown = revenueType === 'fixed_price' && contractDuration > 0;
 
             resources.forEach(resource => {
-                // Initialize allocations for new duration
                 if (showBreakdown) {
                     for (let m = 0; m < contractDuration; m++) {
                         if (!resource.monthlyAllocations[m]) {
@@ -1031,47 +987,36 @@
                     }
                 }
 
-                // Re-render resource card
                 const oldCard = document.getElementById(`resource-${resource.id}`);
                 if (oldCard) {
                     const nameInput = oldCard.querySelector('input[name="name"]');
                     const rateInput = oldCard.querySelector('input[name="rate"]');
                     const currencySelect = oldCard.querySelector('select[name="currency"]');
                     const periodSelect = oldCard.querySelector('select[name="period"]');
-                    const fteInput = oldCard.querySelector('input[name="fte"]');
 
-                    // Save current values
                     const savedValues = {
                         name: nameInput?.value || resource.name,
                         rate: rateInput?.value || '',
                         currency: currencySelect?.value || 'USD',
-                        period: periodSelect?.value || 'monthly',
-                        fte: fteInput?.value || '100'
+                        period: periodSelect?.value || 'monthly'
                     };
+
+                    resource.name = savedValues.name;
 
                     oldCard.remove();
                     renderResource(resource, showBreakdown, contractDuration);
 
-                    // Restore values
                     const newCard = document.getElementById(`resource-${resource.id}`);
                     if (newCard) {
-                        const newName = newCard.querySelector('input[name="name"]');
-                        const newRate = newCard.querySelector('input[name="rate"]');
-                        const newCurrency = newCard.querySelector('select[name="currency"]');
-                        const newPeriod = newCard.querySelector('select[name="period"]');
-                        const newFte = newCard.querySelector('input[name="fte"]');
-
-                        if (newName) newName.value = savedValues.name;
-                        if (newRate) newRate.value = savedValues.rate;
-                        if (newCurrency) newCurrency.value = savedValues.currency;
-                        if (newPeriod) newPeriod.value = savedValues.period;
-                        if (newFte) newFte.value = savedValues.fte;
+                        newCard.querySelector('input[name="name"]').value = savedValues.name;
+                        newCard.querySelector('input[name="rate"]').value = savedValues.rate;
+                        newCard.querySelector('select[name="currency"]').value = savedValues.currency;
+                        newCard.querySelector('select[name="period"]').value = savedValues.period;
                     }
                 }
             });
         }
 
-        // Get resource data from form
         function getResourceData(resourceId) {
             const card = document.getElementById(`resource-${resourceId}`);
             if (!card) return null;
@@ -1081,45 +1026,37 @@
             return {
                 id: resourceId,
                 name: card.querySelector('input[name="name"]')?.value || `Resource ${resourceId}`,
+                color: resource?.color || CHART_COLORS[0],
                 rate: parseFloat(card.querySelector('input[name="rate"]')?.value) || 0,
                 currency: card.querySelector('select[name="currency"]')?.value || 'USD',
                 period: card.querySelector('select[name="period"]')?.value || 'monthly',
-                baseFte: (parseFloat(card.querySelector('input[name="fte"]')?.value) || 100) / 100,
                 monthlyAllocations: resource?.monthlyAllocations || {}
             };
         }
 
-        // Calculate costs for a resource over the contract period
-        function calculateResourceCosts(resourceData, contractDuration, hoursPerMonth, upliftPercent) {
+        function calculateResourceCosts(resourceData, contractDuration, hoursPerMonth, upliftPercent, totalRevenueUSD) {
             const rateUSD = convertToUSD(resourceData.rate, resourceData.currency);
 
             let monthlyRateUSD;
             switch (resourceData.period) {
-                case 'hourly':
-                    monthlyRateUSD = rateUSD * hoursPerMonth;
-                    break;
-                case 'monthly':
-                    monthlyRateUSD = rateUSD;
-                    break;
-                case 'annual':
-                    monthlyRateUSD = rateUSD / 12;
-                    break;
+                case 'hourly': monthlyRateUSD = rateUSD * hoursPerMonth; break;
+                case 'monthly': monthlyRateUSD = rateUSD; break;
+                case 'annual': monthlyRateUSD = rateUSD / 12; break;
             }
 
             const monthlyCosts = [];
             let totalBaseCost = 0;
             let totalLoadedCost = 0;
+            let totalFTE = 0;
 
-            const duration = contractDuration || 12; // Default to 12 months if not fixed price
+            const duration = contractDuration || 12;
 
             for (let m = 0; m < duration; m++) {
-                let monthFte = resourceData.baseFte;
+                let monthFte = 1.0;
 
-                // Check for custom allocation
                 if (resourceData.monthlyAllocations[m]) {
                     const alloc = resourceData.monthlyAllocations[m];
                     if (alloc.useWeekly) {
-                        // Average of weekly allocations
                         monthFte = alloc.weeks.reduce((a, b) => a + b, 0) / WEEKS_PER_MONTH;
                     } else {
                         monthFte = alloc.fte;
@@ -1129,28 +1066,28 @@
                 const baseCost = monthlyRateUSD * monthFte;
                 const loadedCost = baseCost * (1 + upliftPercent);
 
-                monthlyCosts.push({
-                    month: m + 1,
-                    fte: monthFte,
-                    baseCost,
-                    loadedCost
-                });
+                monthlyCosts.push({ month: m + 1, fte: monthFte, baseCost, loadedCost });
 
                 totalBaseCost += baseCost;
                 totalLoadedCost += loadedCost;
+                totalFTE += monthFte;
             }
+
+            const avgUtilization = totalFTE / duration;
+            const resourceAPM = totalRevenueUSD > 0 ? (totalLoadedCost / totalRevenueUSD) : 0;
 
             return {
                 name: resourceData.name,
+                color: resourceData.color,
                 monthlyCosts,
                 totalBaseCost,
-                totalLoadedCost
+                totalLoadedCost,
+                avgUtilization,
+                costShare: resourceAPM
             };
         }
 
-        // Main calculation function
         function calculate() {
-            // Get inputs
             const revenueType = document.getElementById('revenue-type').value;
             const revenueAmount = parseFloat(document.getElementById('revenue-amount').value);
             const revenueCurrency = document.getElementById('revenue-currency').value;
@@ -1159,7 +1096,6 @@
             const hoursPerMonth = parseFloat(document.getElementById('hours-per-month').value) || 160;
             const reportingCurrency = document.getElementById('reporting-currency').value;
 
-            // Validation
             if (isNaN(revenueAmount) || revenueAmount <= 0) {
                 throw new Error('Please enter a valid revenue amount greater than zero');
             }
@@ -1170,16 +1106,13 @@
                 throw new Error('Please add at least one resource');
             }
 
-            // Determine calculation period
             let calcDuration = contractDuration;
             if (revenueType !== 'fixed_price') {
-                calcDuration = 12; // Calculate for 1 year
+                calcDuration = 12;
             }
 
-            // Calculate revenue in USD
             const revenueAmountUSD = convertToUSD(revenueAmount, revenueCurrency);
-            let totalRevenueUSD;
-            let monthlyRevenueUSD;
+            let totalRevenueUSD, monthlyRevenueUSD;
 
             switch (revenueType) {
                 case 'hourly':
@@ -1200,35 +1133,25 @@
                     break;
             }
 
-            // Calculate costs for all resources
             const resourceResults = [];
             let totalBaseCostUSD = 0;
             let totalLoadedCostUSD = 0;
             const monthlyTotals = [];
 
-            // Initialize monthly totals
             for (let m = 0; m < calcDuration; m++) {
-                monthlyTotals.push({
-                    month: m + 1,
-                    revenue: monthlyRevenueUSD,
-                    baseCost: 0,
-                    loadedCost: 0,
-                    resources: []
-                });
+                monthlyTotals.push({ month: m + 1, revenue: monthlyRevenueUSD, baseCost: 0, loadedCost: 0, resources: [] });
             }
 
-            // Calculate each resource
             resources.forEach(resource => {
                 const data = getResourceData(resource.id);
                 if (!data || data.rate <= 0) return;
 
-                const costs = calculateResourceCosts(data, calcDuration, hoursPerMonth, upliftPercent);
+                const costs = calculateResourceCosts(data, calcDuration, hoursPerMonth, upliftPercent, totalRevenueUSD);
                 resourceResults.push(costs);
 
                 totalBaseCostUSD += costs.totalBaseCost;
                 totalLoadedCostUSD += costs.totalLoadedCost;
 
-                // Add to monthly totals
                 costs.monthlyCosts.forEach((mc, idx) => {
                     if (monthlyTotals[idx]) {
                         monthlyTotals[idx].baseCost += mc.baseCost;
@@ -1243,25 +1166,29 @@
                 });
             });
 
-            // Calculate APM
             const apm = 1 - (totalLoadedCostUSD / totalRevenueUSD);
             const grossProfitUSD = totalRevenueUSD - totalLoadedCostUSD;
 
-            // Convert to reporting currency
             return {
                 reportingCurrency,
                 revenueType,
                 contractDuration: calcDuration,
                 totalRevenue: convertFromUSD(totalRevenueUSD, reportingCurrency),
+                totalRevenueUSD,
                 monthlyRevenue: convertFromUSD(monthlyRevenueUSD, reportingCurrency),
                 totalBaseCost: convertFromUSD(totalBaseCostUSD, reportingCurrency),
                 totalLoadedCost: convertFromUSD(totalLoadedCostUSD, reportingCurrency),
+                totalLoadedCostUSD,
                 grossProfit: convertFromUSD(grossProfitUSD, reportingCurrency),
                 apm,
                 resourceResults: resourceResults.map(r => ({
                     name: r.name,
+                    color: r.color,
                     totalBaseCost: convertFromUSD(r.totalBaseCost, reportingCurrency),
-                    totalLoadedCost: convertFromUSD(r.totalLoadedCost, reportingCurrency)
+                    totalLoadedCost: convertFromUSD(r.totalLoadedCost, reportingCurrency),
+                    totalLoadedCostUSD: r.totalLoadedCost,
+                    avgUtilization: r.avgUtilization,
+                    costShare: r.costShare
                 })),
                 monthlyTotals: monthlyTotals.map(m => ({
                     month: m.month,
@@ -1274,7 +1201,67 @@
             };
         }
 
-        // Display results
+        // Draw pie chart
+        function drawPieChart(results) {
+            const canvas = document.getElementById('pie-chart');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 5;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const totalCost = results.totalLoadedCostUSD;
+            const totalRevenue = results.totalRevenueUSD;
+
+            if (totalRevenue <= 0) return;
+
+            const data = [];
+            let usedCostShare = 0;
+
+            results.resourceResults.forEach(r => {
+                const share = r.totalLoadedCostUSD / totalRevenue;
+                data.push({ name: r.name, value: share, color: r.color });
+                usedCostShare += share;
+            });
+
+            const profitShare = Math.max(0, 1 - usedCostShare);
+            if (profitShare > 0.001) {
+                data.push({ name: 'Profit Margin', value: profitShare, color: '#22c55e' });
+            }
+
+            let startAngle = -Math.PI / 2;
+
+            data.forEach(item => {
+                const sliceAngle = item.value * 2 * Math.PI;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+                ctx.closePath();
+                ctx.fillStyle = item.color;
+                ctx.fill();
+
+                startAngle += sliceAngle;
+            });
+
+            // Draw center hole for donut effect
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius * 0.5, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+
+            // Draw legend
+            const legendContainer = document.getElementById('chart-legend');
+            legendContainer.innerHTML = data.map(item => `
+                <div class="legend-item">
+                    <span class="legend-color" style="background: ${item.color};"></span>
+                    <span class="legend-label">${item.name}</span>
+                    <span class="legend-value">${(item.value * 100).toFixed(1)}%</span>
+                </div>
+            `).join('');
+        }
+
         function displayResults(results) {
             const currency = results.reportingCurrency;
 
@@ -1298,6 +1285,10 @@
             document.getElementById('total-base-cost').textContent = formatCurrency(results.totalBaseCost, currency);
             document.getElementById('total-loaded-cost').textContent = formatCurrency(results.totalLoadedCost, currency);
             document.getElementById('gross-profit').textContent = formatCurrency(results.grossProfit, currency);
+            document.getElementById('remaining-margin').textContent = formatPercent(results.apm);
+
+            // Draw pie chart
+            drawPieChart(results);
 
             // Monthly tab
             const monthlyContainer = document.getElementById('monthly-results');
@@ -1322,20 +1313,34 @@
             });
             monthlyContainer.innerHTML = monthlyHTML;
 
-            // Resources tab
+            // Resources tab with enhanced details
             const resourceContainer = document.getElementById('resource-results');
             let resourceHTML = '';
             results.resourceResults.forEach(r => {
+                const resourceAPM = 1 - r.costShare;
+                const apmColor = resourceAPM > 0 ? 'var(--success)' : 'var(--danger)';
+
                 resourceHTML += `
-                    <div class="result-section">
-                        <div class="result-section-title">${r.name}</div>
-                        <div class="result-row">
-                            <span class="result-label">Total Base Cost</span>
-                            <span class="result-value">${formatCurrency(r.totalBaseCost, currency)}</span>
+                    <div class="resource-result-card">
+                        <div class="resource-result-header">
+                            <div class="resource-result-name">
+                                <span class="resource-color-dot" style="background: ${r.color};"></span>
+                                ${r.name}
+                            </div>
                         </div>
-                        <div class="result-row">
-                            <span class="result-label">Total Loaded Cost</span>
-                            <span class="result-value">${formatCurrency(r.totalLoadedCost, currency)}</span>
+                        <div class="resource-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">Loaded Cost</div>
+                                <div class="stat-value">${formatCurrency(r.totalLoadedCost, currency)}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Cost Share</div>
+                                <div class="stat-value">${formatPercent(r.costShare)}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Avg Utilization</div>
+                                <div class="stat-value">${formatPercent(r.avgUtilization)}</div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1343,7 +1348,6 @@
             resourceContainer.innerHTML = resourceHTML;
         }
 
-        // Tab switching
         function showTab(tabName) {
             document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
