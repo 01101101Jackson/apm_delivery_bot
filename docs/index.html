@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APM / Margin Calculator</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--text);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .formula {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        .formula code {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        code {
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--bg);
+            font-weight: 600;
+        }
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin: 0.5rem 0;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .feature {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        .feature h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>APM / Margin Calculator</h1>
+            <p class="subtitle">Calculate project margin by modelling revenue vs consultant cost</p>
+            <p style="margin-top: 1rem;">
+                <span class="badge">Python 3.9+</span>
+                <span class="badge">CLI</span>
+                <span class="badge">Multi-Currency</span>
+            </p>
+        </header>
+
+        <section>
+            <h2>Overview</h2>
+            <p>The APM Calculator helps analyze project profitability by comparing revenue against consultant costs, supporting different commercial models, currencies, time allocations, and overhead uplift.</p>
+
+            <div class="formula">
+                <strong>APM Formula:</strong> <code>APM = 1 - (Loaded Cost / Revenue)</code>
+                <br><br>
+                <small>Where: <code>Loaded Cost = Base Cost × (1 + Uplift%)</code></small>
+            </div>
+        </section>
+
+        <section>
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <h4>Revenue Types</h4>
+                    <p>Hourly, Monthly, Annual, Fixed Price</p>
+                </div>
+                <div class="feature">
+                    <h4>Cost Periods</h4>
+                    <p>Hourly, Monthly, Annual rates</p>
+                </div>
+                <div class="feature">
+                    <h4>FTE Scaling</h4>
+                    <p>Scales cost only (0-100%)</p>
+                </div>
+                <div class="feature">
+                    <h4>18 Currencies</h4>
+                    <p>USD, EUR, GBP, and more</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Installation</h2>
+            <pre><code># Clone the repository
+git clone https://github.com/01101101Jackson/apm_delivery_bot.git
+cd apm_delivery_bot
+
+# Install the package
+pip install -e .</code></pre>
+        </section>
+
+        <section>
+            <h2>Usage</h2>
+
+            <h3>Basic Calculation</h3>
+            <pre><code>apm-calc --revenue-type monthly --revenue-amount 15000 --revenue-currency USD \
+         --cost-period monthly --cost-amount 8000 --cost-currency USD \
+         --allocation 1.0 --uplift 0.25 --reporting-currency USD</code></pre>
+
+            <div class="card">
+                <strong>Output:</strong>
+                <pre style="margin-top: 0.5rem;"><code>============================================================
+APM CALCULATION RESULTS
+============================================================
+
+Reporting Currency: USD
+
+--- Revenue ---
+  Monthly:  USD 15,000.00
+  Yearly:   USD 180,000.00
+
+--- Base Cost (FTE-adjusted, before uplift) ---
+  Monthly:  USD 8,000.00
+  Yearly:   USD 96,000.00
+
+--- Loaded Cost (after uplift) ---
+  Monthly:  USD 10,000.00
+  Yearly:   USD 120,000.00
+
+--- APM / Margin ---
+  Monthly:  33.33%
+  Yearly:   33.33%
+
+============================================================</code></pre>
+            </div>
+
+            <h3>Fixed Price Contract</h3>
+            <pre><code>apm-calc --revenue-type fixed_price --revenue-amount 100000 --revenue-currency USD \
+         --contract-duration 6 \
+         --cost-period monthly --cost-amount 10000 --cost-currency USD \
+         --allocation 1.0 --uplift 0.25 --reporting-currency USD</code></pre>
+
+            <h3>Cross-Currency Calculation</h3>
+            <pre><code>apm-calc --revenue-type hourly --revenue-amount 150 --revenue-currency EUR \
+         --cost-period hourly --cost-amount 75 --cost-currency GBP \
+         --allocation 0.5 --uplift 0.20 --reporting-currency USD</code></pre>
+
+            <h3>Interactive Mode</h3>
+            <pre><code>apm-calc --interactive</code></pre>
+
+            <h3>JSON Output</h3>
+            <pre><code>apm-calc ... --json</code></pre>
+        </section>
+
+        <section>
+            <h2>CLI Options</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>--revenue-type, -rt</code></td>
+                        <td>hourly, monthly, annual, fixed_price</td>
+                    </tr>
+                    <tr>
+                        <td><code>--revenue-amount, -ra</code></td>
+                        <td>Revenue amount</td>
+                    </tr>
+                    <tr>
+                        <td><code>--revenue-currency, -rc</code></td>
+                        <td>Revenue currency (e.g., USD, EUR)</td>
+                    </tr>
+                    <tr>
+                        <td><code>--contract-duration, -cd</code></td>
+                        <td>Contract duration in months (for fixed_price)</td>
+                    </tr>
+                    <tr>
+                        <td><code>--cost-period, -cp</code></td>
+                        <td>hourly, monthly, annual</td>
+                    </tr>
+                    <tr>
+                        <td><code>--cost-amount, -ca</code></td>
+                        <td>Cost rate amount</td>
+                    </tr>
+                    <tr>
+                        <td><code>--cost-currency, -cc</code></td>
+                        <td>Cost currency</td>
+                    </tr>
+                    <tr>
+                        <td><code>--allocation, -a</code></td>
+                        <td>FTE allocation (0-1, default: 1.0)</td>
+                    </tr>
+                    <tr>
+                        <td><code>--uplift, -u</code></td>
+                        <td>Overhead/uplift percentage (e.g., 0.25 for 25%)</td>
+                    </tr>
+                    <tr>
+                        <td><code>--reporting-currency, -o</code></td>
+                        <td>Output currency</td>
+                    </tr>
+                    <tr>
+                        <td><code>--hours-per-month</code></td>
+                        <td>Hours per month (default: 160)</td>
+                    </tr>
+                    <tr>
+                        <td><code>--json, -j</code></td>
+                        <td>Output as JSON</td>
+                    </tr>
+                    <tr>
+                        <td><code>--interactive, -i</code></td>
+                        <td>Interactive mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>--list-currencies</code></td>
+                        <td>List supported currencies</td>
+                    </tr>
+                    <tr>
+                        <td><code>--list-rates</code></td>
+                        <td>List exchange rates</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Supported Currencies</h2>
+            <p>USD, EUR, GBP, CHF, AUD, CAD, JPY, CNY, INR, SGD, HKD, NZD, SEK, NOK, DKK, ZAR, BRL, MXN</p>
+            <p><em>Exchange rates are static and can be customized programmatically.</em></p>
+        </section>
+
+        <section>
+            <h2>Python API</h2>
+            <pre><code>from apm_calculator import APMCalculator
+
+calculator = APMCalculator()
+
+result = calculator.calculate(
+    revenue_type="monthly",
+    revenue_amount=15000,
+    revenue_currency="USD",
+    cost_rate_period="monthly",
+    cost_amount=8000,
+    cost_currency="USD",
+    allocation_fte=1.0,
+    uplift_percent=0.25,
+    reporting_currency="USD",
+)
+
+print(f"APM: {result.apm_monthly:.2%}")  # APM: 33.33%
+print(result.to_dict())  # Get as dictionary</code></pre>
+        </section>
+
+        <footer>
+            <p>APM / Margin Calculator</p>
+            <p><a href="https://github.com/01101101Jackson/apm_delivery_bot">View on GitHub</a></p>
+        </footer>
+    </div>
+</body>
+</html>
