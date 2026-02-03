@@ -402,6 +402,25 @@
 
         .placeholder-message { text-align: center; padding: 2rem 1rem; color: var(--text-muted); }
 
+        /* Gantt Chart Styles */
+        .gantt-container { overflow-x: auto; margin: 1rem 0; }
+        .gantt-chart { min-width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .gantt-chart th, .gantt-chart td { padding: 0.4rem 0.3rem; text-align: center; border: 1px solid var(--border); }
+        .gantt-chart th { background: var(--bg); font-weight: 600; color: var(--text-muted); position: sticky; top: 0; }
+        .gantt-chart .resource-label { text-align: left; font-weight: 500; white-space: nowrap; position: sticky; left: 0; background: white; z-index: 1; }
+        .gantt-bar { height: 24px; border-radius: 3px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; font-weight: 600; min-width: 30px; }
+        .gantt-cell { padding: 0.25rem !important; }
+        .week-header { font-size: 0.65rem; }
+
+        /* Export Button */
+        .export-btn { margin-top: 1rem; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; }
+
+        /* Resource input row with uplift */
+        .resource-inputs-4 { display: grid; grid-template-columns: 2fr 1fr 0.8fr 0.8fr; gap: 0.5rem; align-items: end; }
+        @media (max-width: 700px) { .resource-inputs-4 { grid-template-columns: 1fr 1fr; } }
+
         .error-message {
             background: var(--danger-light);
             color: var(--danger);
@@ -495,7 +514,7 @@
                     <div class="form-section">
                         <div class="section-title">Settings</div>
 
-                        <div class="input-row-3">
+                        <div class="input-row">
                             <div class="form-group hidden" id="hours-per-month-group">
                                 <label for="hours-per-month">Hours/Month</label>
                                 <input type="number" id="hours-per-month" min="1" step="1" value="160" required>
@@ -516,8 +535,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="uplift">Uplift % <span class="label-hint">(overhead)</span></label>
-                                <input type="number" id="uplift" min="0" step="0.1" value="25" required>
+                                <label for="default-uplift">Default Uplift % <span class="label-hint">(for new resources)</span></label>
+                                <input type="number" id="default-uplift" min="0" step="0.1" value="25">
                             </div>
                         </div>
                     </div>
@@ -563,6 +582,7 @@
                         <button type="button" class="tab active" onclick="showTab('summary')">Summary</button>
                         <button type="button" class="tab" onclick="showTab('monthly')">Monthly</button>
                         <button type="button" class="tab" onclick="showTab('resources')">Resources</button>
+                        <button type="button" class="tab" onclick="showTab('gantt')">Gantt</button>
                     </div>
 
                     <!-- Summary Tab -->
@@ -621,6 +641,16 @@
                     <div id="tab-resources" class="hidden">
                         <div id="resource-results"></div>
                     </div>
+
+                    <!-- Gantt Tab -->
+                    <div id="tab-gantt" class="hidden">
+                        <div class="gantt-container" id="gantt-container"></div>
+                    </div>
+
+                    <!-- Export Button -->
+                    <button type="button" class="btn btn-success export-btn" onclick="exportToExcel()" style="width: 100%;">
+                        Export to Excel
+                    </button>
 
                     <div class="formula-box">
                         <strong>Formula:</strong>
@@ -800,6 +830,8 @@
                 `;
             }
 
+            const defaultUplift = parseFloat(document.getElementById('default-uplift').value) || 25;
+
             div.innerHTML = `
                 <div class="resource-header">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -808,7 +840,7 @@
                     </div>
                     <button type="button" class="btn btn-danger btn-sm" onclick="removeResource(${resource.id})">Remove</button>
                 </div>
-                <div class="resource-inputs">
+                <div class="resource-inputs-4">
                     <div class="form-group">
                         <label>Cost Rate</label>
                         <div class="input-row">
@@ -830,6 +862,10 @@
                             <option value="monthly" selected>Monthly</option>
                             <option value="annual">Annual</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Uplift %</label>
+                        <input type="number" name="uplift" min="0" step="0.1" value="${defaultUplift}" placeholder="25">
                     </div>
                     <div class="form-group">
                         <label>Avg FTE</label>
@@ -1022,6 +1058,7 @@
             if (!card) return null;
 
             const resource = resources.find(r => r.id === resourceId);
+            const defaultUplift = parseFloat(document.getElementById('default-uplift').value) || 25;
 
             return {
                 id: resourceId,
@@ -1030,12 +1067,14 @@
                 rate: parseFloat(card.querySelector('input[name="rate"]')?.value) || 0,
                 currency: card.querySelector('select[name="currency"]')?.value || 'USD',
                 period: card.querySelector('select[name="period"]')?.value || 'monthly',
+                uplift: parseFloat(card.querySelector('input[name="uplift"]')?.value) || defaultUplift,
                 monthlyAllocations: resource?.monthlyAllocations || {}
             };
         }
 
-        function calculateResourceCosts(resourceData, contractDuration, hoursPerMonth, upliftPercent, totalRevenueUSD) {
+        function calculateResourceCosts(resourceData, contractDuration, hoursPerMonth, totalRevenueUSD) {
             const rateUSD = convertToUSD(resourceData.rate, resourceData.currency);
+            const upliftPercent = (resourceData.uplift || 25) / 100;
 
             let monthlyRateUSD;
             switch (resourceData.period) {
@@ -1045,6 +1084,7 @@
             }
 
             const monthlyCosts = [];
+            const weeklyAllocations = [];
             let totalBaseCost = 0;
             let totalLoadedCost = 0;
             let totalFTE = 0;
@@ -1053,20 +1093,24 @@
 
             for (let m = 0; m < duration; m++) {
                 let monthFte = 1.0;
+                let weekFtes = [1.0, 1.0, 1.0, 1.0];
 
                 if (resourceData.monthlyAllocations[m]) {
                     const alloc = resourceData.monthlyAllocations[m];
                     if (alloc.useWeekly) {
+                        weekFtes = alloc.weeks;
                         monthFte = alloc.weeks.reduce((a, b) => a + b, 0) / WEEKS_PER_MONTH;
                     } else {
                         monthFte = alloc.fte;
+                        weekFtes = [alloc.fte, alloc.fte, alloc.fte, alloc.fte];
                     }
                 }
 
                 const baseCost = monthlyRateUSD * monthFte;
                 const loadedCost = baseCost * (1 + upliftPercent);
 
-                monthlyCosts.push({ month: m + 1, fte: monthFte, baseCost, loadedCost });
+                monthlyCosts.push({ month: m + 1, fte: monthFte, baseCost, loadedCost, weeks: weekFtes });
+                weeklyAllocations.push(weekFtes);
 
                 totalBaseCost += baseCost;
                 totalLoadedCost += loadedCost;
@@ -1074,25 +1118,30 @@
             }
 
             const avgUtilization = totalFTE / duration;
-            const resourceAPM = totalRevenueUSD > 0 ? (totalLoadedCost / totalRevenueUSD) : 0;
+            const resourceCostShare = totalRevenueUSD > 0 ? (totalLoadedCost / totalRevenueUSD) : 0;
+            const resourceAPM = totalRevenueUSD > 0 ? 1 - resourceCostShare : 0;
 
             return {
                 name: resourceData.name,
                 color: resourceData.color,
+                uplift: resourceData.uplift,
                 monthlyCosts,
+                weeklyAllocations,
                 totalBaseCost,
                 totalLoadedCost,
                 avgUtilization,
-                costShare: resourceAPM
+                costShare: resourceCostShare,
+                apm: resourceAPM
             };
         }
+
+        let lastResults = null; // Store for export
 
         function calculate() {
             const revenueType = document.getElementById('revenue-type').value;
             const revenueAmount = parseFloat(document.getElementById('revenue-amount').value);
             const revenueCurrency = document.getElementById('revenue-currency').value;
             const contractDuration = parseInt(document.getElementById('contract-duration').value) || 0;
-            const upliftPercent = parseFloat(document.getElementById('uplift').value) / 100;
             const hoursPerMonth = parseFloat(document.getElementById('hours-per-month').value) || 160;
             const reportingCurrency = document.getElementById('reporting-currency').value;
 
@@ -1146,7 +1195,7 @@
                 const data = getResourceData(resource.id);
                 if (!data || data.rate <= 0) return;
 
-                const costs = calculateResourceCosts(data, calcDuration, hoursPerMonth, upliftPercent, totalRevenueUSD);
+                const costs = calculateResourceCosts(data, calcDuration, hoursPerMonth, totalRevenueUSD);
                 resourceResults.push(costs);
 
                 totalBaseCostUSD += costs.totalBaseCost;
@@ -1184,11 +1233,15 @@
                 resourceResults: resourceResults.map(r => ({
                     name: r.name,
                     color: r.color,
+                    uplift: r.uplift,
                     totalBaseCost: convertFromUSD(r.totalBaseCost, reportingCurrency),
                     totalLoadedCost: convertFromUSD(r.totalLoadedCost, reportingCurrency),
                     totalLoadedCostUSD: r.totalLoadedCost,
                     avgUtilization: r.avgUtilization,
-                    costShare: r.costShare
+                    costShare: r.costShare,
+                    apm: r.apm,
+                    weeklyAllocations: r.weeklyAllocations,
+                    monthlyCosts: r.monthlyCosts
                 })),
                 monthlyTotals: monthlyTotals.map(m => ({
                     month: m.month,
@@ -1313,12 +1366,11 @@
             });
             monthlyContainer.innerHTML = monthlyHTML;
 
-            // Resources tab with enhanced details
+            // Resources tab with enhanced details (APM, loaded cost, utilization, uplift)
             const resourceContainer = document.getElementById('resource-results');
             let resourceHTML = '';
             results.resourceResults.forEach(r => {
-                const resourceAPM = 1 - r.costShare;
-                const apmColor = resourceAPM > 0 ? 'var(--success)' : 'var(--danger)';
+                const apmColor = r.apm > 0 ? 'var(--success)' : 'var(--danger)';
 
                 resourceHTML += `
                     <div class="resource-result-card">
@@ -1327,11 +1379,16 @@
                                 <span class="resource-color-dot" style="background: ${r.color};"></span>
                                 ${r.name}
                             </div>
+                            <div style="font-weight: 600; color: ${apmColor};">APM: ${formatPercent(r.apm)}</div>
                         </div>
-                        <div class="resource-stats">
+                        <div class="resource-stats" style="grid-template-columns: repeat(5, 1fr);">
                             <div class="stat-item">
                                 <div class="stat-label">Loaded Cost</div>
                                 <div class="stat-value">${formatCurrency(r.totalLoadedCost, currency)}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Base Cost</div>
+                                <div class="stat-value">${formatCurrency(r.totalBaseCost, currency)}</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-label">Cost Share</div>
@@ -1341,11 +1398,21 @@
                                 <div class="stat-label">Avg Utilization</div>
                                 <div class="stat-value">${formatPercent(r.avgUtilization)}</div>
                             </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Uplift</div>
+                                <div class="stat-value">${r.uplift}%</div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
             resourceContainer.innerHTML = resourceHTML;
+
+            // Gantt chart
+            renderGanttChart(results);
+
+            // Store results for export
+            lastResults = results;
         }
 
         function showTab(tabName) {
@@ -1355,7 +1422,138 @@
             document.getElementById('tab-summary').classList.add('hidden');
             document.getElementById('tab-monthly').classList.add('hidden');
             document.getElementById('tab-resources').classList.add('hidden');
+            document.getElementById('tab-gantt').classList.add('hidden');
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        }
+
+        // Render Gantt chart showing resource utilization over months/weeks
+        function renderGanttChart(results) {
+            const container = document.getElementById('gantt-container');
+            const duration = results.contractDuration;
+            const resourceData = results.resourceResults;
+
+            if (resourceData.length === 0) {
+                container.innerHTML = '<p class="placeholder-message">No resource data to display</p>';
+                return;
+            }
+
+            // Build header row with months and weeks
+            let headerRow1 = '<th class="resource-label">Resource</th>';
+            let headerRow2 = '<th class="resource-label"></th>';
+
+            for (let m = 0; m < duration; m++) {
+                headerRow1 += `<th colspan="4" style="background: ${m % 2 === 0 ? 'var(--primary-light)' : 'var(--bg)'};">Month ${m + 1}</th>`;
+                for (let w = 0; w < 4; w++) {
+                    headerRow2 += `<th class="week-header" style="background: ${m % 2 === 0 ? 'var(--primary-light)' : 'var(--bg)'};">W${w + 1}</th>`;
+                }
+            }
+
+            // Build data rows for each resource
+            let bodyRows = '';
+            resourceData.forEach(resource => {
+                let row = `<td class="resource-label"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${resource.color}; margin-right: 0.5rem;"></span>${resource.name}</td>`;
+
+                for (let m = 0; m < duration; m++) {
+                    const weeks = resource.weeklyAllocations && resource.weeklyAllocations[m] ? resource.weeklyAllocations[m] : [1, 1, 1, 1];
+                    for (let w = 0; w < 4; w++) {
+                        const fte = weeks[w] || 0;
+                        const opacity = Math.min(1, Math.max(0.1, fte));
+                        const bgColor = fte > 0 ? resource.color : '#e5e7eb';
+                        const textColor = fte > 0.5 ? 'white' : (fte > 0 ? '#1e293b' : '#9ca3af');
+                        row += `<td class="gantt-cell" style="background: ${m % 2 === 0 ? '#f8fafc' : 'white'};">
+                            <div class="gantt-bar" style="background: ${bgColor}; opacity: ${opacity}; color: ${textColor};">
+                                ${fte > 0 ? (fte * 100).toFixed(0) + '%' : '-'}
+                            </div>
+                        </td>`;
+                    }
+                }
+                bodyRows += `<tr>${row}</tr>`;
+            });
+
+            container.innerHTML = `
+                <table class="gantt-chart">
+                    <thead>
+                        <tr>${headerRow1}</tr>
+                        <tr>${headerRow2}</tr>
+                    </thead>
+                    <tbody>
+                        ${bodyRows}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Export to Excel (CSV format for compatibility)
+        function exportToExcel() {
+            if (!lastResults) {
+                alert('Please calculate results first');
+                return;
+            }
+
+            const results = lastResults;
+            const currency = results.reportingCurrency;
+            let csv = '';
+
+            // Summary section
+            csv += 'APM / MARGIN CALCULATOR REPORT\n';
+            csv += `Report Currency,${currency}\n`;
+            csv += `Contract Duration,${results.contractDuration} months\n\n`;
+
+            csv += 'SUMMARY\n';
+            csv += `Total Revenue,${results.totalRevenue.toFixed(2)}\n`;
+            csv += `Monthly Revenue (avg),${results.monthlyRevenue.toFixed(2)}\n`;
+            csv += `Total Base Cost,${results.totalBaseCost.toFixed(2)}\n`;
+            csv += `Total Loaded Cost,${results.totalLoadedCost.toFixed(2)}\n`;
+            csv += `Gross Profit,${results.grossProfit.toFixed(2)}\n`;
+            csv += `APM / Margin,${(results.apm * 100).toFixed(2)}%\n\n`;
+
+            // Resources section
+            csv += 'RESOURCES\n';
+            csv += 'Name,Base Cost,Loaded Cost,Cost Share,Avg Utilization,Uplift %,APM\n';
+            results.resourceResults.forEach(r => {
+                csv += `${r.name},${r.totalBaseCost.toFixed(2)},${r.totalLoadedCost.toFixed(2)},${(r.costShare * 100).toFixed(2)}%,${(r.avgUtilization * 100).toFixed(2)}%,${r.uplift}%,${(r.apm * 100).toFixed(2)}%\n`;
+            });
+            csv += '\n';
+
+            // Monthly breakdown section
+            csv += 'MONTHLY BREAKDOWN\n';
+            csv += 'Month,Revenue,Base Cost,Loaded Cost,Profit,APM\n';
+            results.monthlyTotals.forEach(m => {
+                csv += `Month ${m.month},${m.revenue.toFixed(2)},${m.baseCost.toFixed(2)},${m.loadedCost.toFixed(2)},${m.profit.toFixed(2)},${(m.apm * 100).toFixed(2)}%\n`;
+            });
+            csv += '\n';
+
+            // Weekly allocation (Gantt data)
+            csv += 'WEEKLY ALLOCATION (FTE %)\n';
+            let weekHeader = 'Resource';
+            for (let m = 0; m < results.contractDuration; m++) {
+                for (let w = 0; w < 4; w++) {
+                    weekHeader += `,M${m + 1}W${w + 1}`;
+                }
+            }
+            csv += weekHeader + '\n';
+
+            results.resourceResults.forEach(r => {
+                let row = r.name;
+                for (let m = 0; m < results.contractDuration; m++) {
+                    const weeks = r.weeklyAllocations && r.weeklyAllocations[m] ? r.weeklyAllocations[m] : [1, 1, 1, 1];
+                    for (let w = 0; w < 4; w++) {
+                        row += `,${((weeks[w] || 0) * 100).toFixed(0)}%`;
+                    }
+                }
+                csv += row + '\n';
+            });
+
+            // Create and download file
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `apm_margin_report_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Event listeners
