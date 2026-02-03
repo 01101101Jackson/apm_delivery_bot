@@ -40,33 +40,34 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 1.75rem;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .subtitle {
             color: var(--text-muted);
+            font-size: 0.95rem;
         }
 
         .app-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .app-layout {
                 grid-template-columns: 1fr;
             }
@@ -75,64 +76,56 @@
         .card {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .card-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 1.25rem;
-            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--primary);
             color: var(--text);
         }
 
         .form-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-section:last-child {
-            margin-bottom: 0;
+            margin-bottom: 1.25rem;
         }
 
         .section-title {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.6rem;
         }
 
         .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group:last-child {
-            margin-bottom: 0;
+            margin-bottom: 0.75rem;
         }
 
         label {
             display: block;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.3rem;
             color: var(--text);
         }
 
         .label-hint {
             font-weight: 400;
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
 
         input, select {
             width: 100%;
-            padding: 0.65rem 0.85rem;
-            font-size: 0.95rem;
+            padding: 0.5rem 0.7rem;
+            font-size: 0.9rem;
             border: 1.5px solid var(--input-border);
-            border-radius: 8px;
+            border-radius: 6px;
             background: var(--input-bg);
             color: var(--text);
             transition: border-color 0.15s, box-shadow 0.15s;
@@ -144,69 +137,251 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
+        input.small-input {
+            padding: 0.35rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
         select {
             cursor: pointer;
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1rem;
-            padding-right: 2.5rem;
+            background-position: right 0.5rem center;
+            background-size: 0.9rem;
+            padding-right: 2rem;
         }
 
         .input-row {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
-        .input-row-equal {
+        .input-row-3 {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .input-row-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 0.5rem;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
+            gap: 0.4rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.15s;
-            width: 100%;
         }
 
         .btn-primary {
             background: var(--primary);
             color: white;
+            width: 100%;
         }
 
         .btn-primary:hover {
             background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
-        .btn-primary:active {
-            transform: translateY(0);
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger-light);
+            color: var(--danger);
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.6rem;
+            font-size: 0.8rem;
         }
 
         .hidden {
             display: none !important;
         }
 
-        /* Results Section */
-        .results-card {
-            background: var(--card-bg);
+        /* Resources Section */
+        .resources-container {
+            margin-top: 0.5rem;
         }
 
+        .resource-card {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .resource-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .resource-inputs {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 1fr;
+            gap: 0.5rem;
+            align-items: end;
+        }
+
+        @media (max-width: 600px) {
+            .resource-inputs {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .add-resource-btn {
+            margin-top: 0.5rem;
+        }
+
+        /* Allocation Breakdown */
+        .allocation-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        .allocation-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .allocation-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .month-breakdown {
+            margin-top: 0.75rem;
+        }
+
+        .month-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            background: var(--bg);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .month-header:hover {
+            background: var(--border);
+        }
+
+        .month-title {
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .month-summary {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .month-fte-input {
+            width: 70px;
+        }
+
+        .week-breakdown {
+            padding: 0.5rem 0.75rem;
+            background: white;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .week-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+        }
+
+        .week-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            width: 60px;
+        }
+
+        .week-input {
+            width: 70px;
+        }
+
+        /* Results Section */
+        .apm-display {
+            background: var(--primary-light);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .apm-display.positive { background: var(--success-light); }
+        .apm-display.negative { background: var(--danger-light); }
+        .apm-display.break-even { background: var(--warning-light); }
+
+        .apm-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+
+        .apm-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .apm-display.negative .apm-value { color: var(--danger); }
+        .apm-display.break-even .apm-value { color: var(--warning); }
+
         .result-section {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid var(--border);
         }
 
@@ -217,138 +392,128 @@
         }
 
         .result-section-title {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .result-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 0;
+            padding: 0.35rem 0;
         }
 
         .result-label {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .result-value {
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
         }
 
-        .apm-display {
-            background: var(--primary-light);
-            border-radius: 12px;
-            padding: 1.25rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
+        .monthly-breakdown-results {
+            margin-top: 0.75rem;
         }
 
-        .apm-display.positive {
-            background: var(--success-light);
+        .monthly-result-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 0.5rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
         }
 
-        .apm-display.negative {
-            background: var(--danger-light);
-        }
-
-        .apm-display.break-even {
-            background: var(--warning-light);
-        }
-
-        .apm-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
-        }
-
-        .apm-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--success);
-        }
-
-        .apm-display.negative .apm-value {
-            color: var(--danger);
-        }
-
-        .apm-display.break-even .apm-value {
-            color: var(--warning);
-        }
-
-        .contract-summary {
-            background: var(--bg);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-
-        .contract-title {
+        .monthly-result-row.header {
             font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: var(--text);
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .monthly-result-row:last-child {
+            border-bottom: none;
         }
 
         .formula-box {
             background: var(--bg);
-            border-radius: 8px;
-            padding: 1rem;
+            border-radius: 6px;
+            padding: 0.75rem;
             margin-top: 1rem;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
 
         .formula-box code {
             background: var(--card-bg);
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
             color: var(--primary);
+        }
+
+        .placeholder-message {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
         }
 
         .error-message {
             background: var(--danger-light);
             color: var(--danger);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
         }
 
-        .placeholder-message {
-            text-align: center;
-            padding: 3rem 1rem;
+        .chevron {
+            transition: transform 0.2s;
+        }
+
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
             color: var(--text-muted);
+            font-weight: 500;
         }
 
-        .placeholder-message svg {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        .tab.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .tab:hover:not(.active) {
+            background: var(--bg);
         }
 
         footer {
             text-align: center;
-            padding: 2rem;
+            padding: 1.5rem;
             color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -356,7 +521,7 @@
     <div class="container">
         <header>
             <h1>APM / Margin Calculator</h1>
-            <p class="subtitle">Calculate project profitability by modelling revenue vs consultant cost</p>
+            <p class="subtitle">Calculate project margin with multi-resource and time-phased allocation</p>
         </header>
 
         <div class="app-layout">
@@ -400,55 +565,7 @@
 
                         <div class="form-group hidden" id="contract-duration-group">
                             <label for="contract-duration">Contract Duration <span class="label-hint">(months)</span></label>
-                            <input type="number" id="contract-duration" min="1" step="1" placeholder="e.g., 6">
-                        </div>
-                    </div>
-
-                    <!-- Cost Section -->
-                    <div class="form-section">
-                        <div class="section-title">Consultant Cost</div>
-
-                        <div class="form-group">
-                            <label for="cost-period">Cost Rate Period</label>
-                            <select id="cost-period" required>
-                                <option value="hourly">Hourly Rate</option>
-                                <option value="monthly" selected>Monthly</option>
-                                <option value="annual">Annual</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="cost-amount">Cost Rate</label>
-                            <div class="input-row">
-                                <input type="number" id="cost-amount" min="0" step="0.01" required placeholder="e.g., 8000">
-                                <select id="cost-currency" required>
-                                    <option value="USD" selected>USD</option>
-                                    <option value="EUR">EUR</option>
-                                    <option value="GBP">GBP</option>
-                                    <option value="CHF">CHF</option>
-                                    <option value="AUD">AUD</option>
-                                    <option value="CAD">CAD</option>
-                                    <option value="JPY">JPY</option>
-                                    <option value="SGD">SGD</option>
-                                    <option value="INR">INR</option>
-                                    <option value="CNY">CNY</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="allocation">FTE Allocation <span class="label-hint">(0% - 100%)</span></label>
-                            <input type="number" id="allocation" min="0" max="100" step="1" value="100" required placeholder="100">
-                        </div>
-                    </div>
-
-                    <!-- Uplift Section -->
-                    <div class="form-section">
-                        <div class="section-title">Overhead / Uplift</div>
-
-                        <div class="form-group">
-                            <label for="uplift">Uplift Percentage <span class="label-hint">(applied to cost)</span></label>
-                            <input type="number" id="uplift" min="0" step="0.1" value="25" required placeholder="e.g., 25">
+                            <input type="number" id="contract-duration" min="1" max="36" step="1" placeholder="e.g., 6" value="">
                         </div>
                     </div>
 
@@ -456,8 +573,8 @@
                     <div class="form-section">
                         <div class="section-title">Settings</div>
 
-                        <div class="input-row-equal">
-                            <div class="form-group">
+                        <div class="input-row">
+                            <div class="form-group hidden" id="hours-per-month-group">
                                 <label for="hours-per-month">Hours/Month</label>
                                 <input type="number" id="hours-per-month" min="1" step="1" value="160" required>
                             </div>
@@ -476,7 +593,24 @@
                                     <option value="CNY">CNY</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="uplift">Uplift % <span class="label-hint">(overhead)</span></label>
+                                <input type="number" id="uplift" min="0" step="0.1" value="25" required>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Resources Section -->
+                    <div class="form-section">
+                        <div class="section-title">Resources / Consultants</div>
+
+                        <div id="resources-container" class="resources-container">
+                            <!-- Resources will be added here dynamically -->
+                        </div>
+
+                        <button type="button" class="btn btn-secondary btn-sm add-resource-btn" onclick="addResource()">
+                            + Add Resource
+                        </button>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Calculate APM</button>
@@ -484,13 +618,10 @@
             </div>
 
             <!-- Results -->
-            <div class="card results-card">
+            <div class="card">
                 <h2 class="card-title">Results</h2>
 
                 <div id="results-placeholder" class="placeholder-message">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
                     <p>Enter your parameters and click<br><strong>Calculate APM</strong> to see results</p>
                 </div>
 
@@ -501,86 +632,69 @@
 
                     <!-- APM Display -->
                     <div class="apm-display" id="apm-display">
-                        <div class="apm-label">APM / Margin (Monthly)</div>
-                        <div class="apm-value" id="apm-monthly-value">--%</div>
+                        <div class="apm-label">Project APM / Margin</div>
+                        <div class="apm-value" id="apm-value">--%</div>
                     </div>
 
-                    <!-- Revenue -->
-                    <div class="result-section">
-                        <div class="result-section-title">Revenue</div>
-                        <div class="result-row">
-                            <span class="result-label">Monthly</span>
-                            <span class="result-value" id="revenue-monthly">--</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Yearly</span>
-                            <span class="result-value" id="revenue-yearly">--</span>
-                        </div>
+                    <!-- Summary tabs -->
+                    <div class="tabs">
+                        <button type="button" class="tab active" onclick="showTab('summary')">Summary</button>
+                        <button type="button" class="tab" onclick="showTab('monthly')">Monthly Breakdown</button>
+                        <button type="button" class="tab" onclick="showTab('resources')">By Resource</button>
                     </div>
 
-                    <!-- Base Cost -->
-                    <div class="result-section">
-                        <div class="result-section-title">Base Cost (FTE-adjusted)</div>
-                        <div class="result-row">
-                            <span class="result-label">Monthly</span>
-                            <span class="result-value" id="base-cost-monthly">--</span>
+                    <!-- Summary Tab -->
+                    <div id="tab-summary">
+                        <div class="result-section">
+                            <div class="result-section-title">Revenue</div>
+                            <div class="result-row">
+                                <span class="result-label">Total Revenue</span>
+                                <span class="result-value" id="total-revenue">--</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Monthly (avg)</span>
+                                <span class="result-value" id="avg-monthly-revenue">--</span>
+                            </div>
                         </div>
-                        <div class="result-row">
-                            <span class="result-label">Yearly</span>
-                            <span class="result-value" id="base-cost-yearly">--</span>
-                        </div>
-                    </div>
 
-                    <!-- Loaded Cost -->
-                    <div class="result-section">
-                        <div class="result-section-title">Loaded Cost (after uplift)</div>
-                        <div class="result-row">
-                            <span class="result-label">Monthly</span>
-                            <span class="result-value" id="loaded-cost-monthly">--</span>
+                        <div class="result-section">
+                            <div class="result-section-title">Cost</div>
+                            <div class="result-row">
+                                <span class="result-label">Total Base Cost</span>
+                                <span class="result-value" id="total-base-cost">--</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Total Loaded Cost</span>
+                                <span class="result-value" id="total-loaded-cost">--</span>
+                            </div>
                         </div>
-                        <div class="result-row">
-                            <span class="result-label">Yearly</span>
-                            <span class="result-value" id="loaded-cost-yearly">--</span>
-                        </div>
-                    </div>
 
-                    <!-- APM Summary -->
-                    <div class="result-section">
-                        <div class="result-section-title">APM / Margin</div>
-                        <div class="result-row">
-                            <span class="result-label">Monthly</span>
-                            <span class="result-value" id="apm-monthly">--</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Yearly</span>
-                            <span class="result-value" id="apm-yearly">--</span>
+                        <div class="result-section">
+                            <div class="result-section-title">Profit</div>
+                            <div class="result-row">
+                                <span class="result-label">Gross Profit</span>
+                                <span class="result-value" id="gross-profit">--</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Contract Summary (for fixed price) -->
-                    <div class="contract-summary hidden" id="contract-summary">
-                        <div class="contract-title">Fixed Price Contract Summary</div>
-                        <div class="result-row">
-                            <span class="result-label">Duration</span>
-                            <span class="result-value" id="contract-duration-display">--</span>
+                    <!-- Monthly Tab -->
+                    <div id="tab-monthly" class="hidden">
+                        <div class="monthly-breakdown-results" id="monthly-results">
+                            <!-- Monthly breakdown will be populated here -->
                         </div>
-                        <div class="result-row">
-                            <span class="result-label">Total Revenue</span>
-                            <span class="result-value" id="contract-revenue">--</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Total Loaded Cost</span>
-                            <span class="result-value" id="contract-cost">--</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Contract APM</span>
-                            <span class="result-value" id="contract-apm">--</span>
+                    </div>
+
+                    <!-- Resources Tab -->
+                    <div id="tab-resources" class="hidden">
+                        <div id="resource-results">
+                            <!-- Resource breakdown will be populated here -->
                         </div>
                     </div>
 
                     <div class="formula-box">
-                        <strong>Formula:</strong><br>
-                        <code>Loaded Cost = Base Cost × (1 + Uplift%)</code><br>
+                        <strong>Formula:</strong>
+                        <code>Loaded Cost = Base Cost × (1 + Uplift%)</code> |
                         <code>APM = 1 − (Loaded Cost / Revenue)</code>
                     </div>
                 </div>
@@ -607,8 +721,21 @@
             CNY: 0.14,
         };
 
+        const WEEKS_PER_MONTH = 4;
+        let resourceCounter = 0;
+        let resources = [];
+
         // Currency formatting
         function formatCurrency(amount, currency) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            }).format(amount);
+        }
+
+        function formatCurrencyDetailed(amount, currency) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: currency,
@@ -630,42 +757,344 @@
             return amount / EXCHANGE_RATES[toCurrency];
         }
 
-        // Calculate revenue in USD
-        function calculateRevenue(type, amount, currency, hoursPerMonth, contractDuration) {
-            const amountUSD = convertToUSD(amount, currency);
+        // Update hours visibility
+        function updateHoursVisibility() {
+            const revenueType = document.getElementById('revenue-type').value;
+            const hoursGroup = document.getElementById('hours-per-month-group');
 
-            let monthlyUSD, yearlyUSD, totalContractUSD = null;
+            // Check if any resource uses hourly
+            const hasHourlyResource = resources.some(r => {
+                const periodSelect = document.querySelector(`#resource-${r.id} select[name="period"]`);
+                return periodSelect && periodSelect.value === 'hourly';
+            });
 
-            switch (type) {
-                case 'hourly':
-                    monthlyUSD = amountUSD * hoursPerMonth;
-                    yearlyUSD = monthlyUSD * 12;
-                    break;
-                case 'monthly':
-                    monthlyUSD = amountUSD;
-                    yearlyUSD = monthlyUSD * 12;
-                    break;
-                case 'annual':
-                    yearlyUSD = amountUSD;
-                    monthlyUSD = yearlyUSD / 12;
-                    break;
-                case 'fixed_price':
-                    totalContractUSD = amountUSD;
-                    monthlyUSD = totalContractUSD / contractDuration;
-                    yearlyUSD = monthlyUSD * 12;
-                    break;
+            if (revenueType === 'hourly' || hasHourlyResource) {
+                hoursGroup.classList.remove('hidden');
+            } else {
+                hoursGroup.classList.add('hidden');
             }
-
-            return { monthlyUSD, yearlyUSD, totalContractUSD };
         }
 
-        // Calculate cost in USD
-        function calculateCost(period, amount, currency, hoursPerMonth, allocationFTE, upliftPercent) {
-            const rateUSD = convertToUSD(amount, currency);
+        // Update contract duration visibility and allocation breakdown
+        function updateContractVisibility() {
+            const revenueType = document.getElementById('revenue-type').value;
+            const durationGroup = document.getElementById('contract-duration-group');
+
+            if (revenueType === 'fixed_price') {
+                durationGroup.classList.remove('hidden');
+            } else {
+                durationGroup.classList.add('hidden');
+            }
+
+            updateAllocationBreakdowns();
+        }
+
+        // Resource management
+        function addResource() {
+            const id = ++resourceCounter;
+            const contractDuration = parseInt(document.getElementById('contract-duration').value) || 0;
+            const revenueType = document.getElementById('revenue-type').value;
+            const showBreakdown = revenueType === 'fixed_price' && contractDuration > 0;
+
+            const resource = {
+                id,
+                name: `Resource ${id}`,
+                monthlyAllocations: {} // Will store { monthIndex: { fte: number, weeks: [w1, w2, w3, w4] } }
+            };
+
+            // Initialize allocations if we have a duration
+            if (showBreakdown) {
+                for (let m = 0; m < contractDuration; m++) {
+                    resource.monthlyAllocations[m] = {
+                        fte: 1.0,
+                        weeks: [1.0, 1.0, 1.0, 1.0],
+                        useWeekly: false
+                    };
+                }
+            }
+
+            resources.push(resource);
+            renderResource(resource, showBreakdown, contractDuration);
+            updateHoursVisibility();
+        }
+
+        function renderResource(resource, showBreakdown, contractDuration) {
+            const container = document.getElementById('resources-container');
+
+            const div = document.createElement('div');
+            div.className = 'resource-card';
+            div.id = `resource-${resource.id}`;
+
+            let allocationHTML = '';
+            if (showBreakdown && contractDuration > 0) {
+                allocationHTML = `
+                    <div class="allocation-section">
+                        <div class="allocation-toggle" onclick="toggleAllocationBreakdown(${resource.id})">
+                            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                            <span>Monthly/Weekly Allocation Breakdown</span>
+                        </div>
+                        <div class="month-breakdown hidden" id="allocation-breakdown-${resource.id}">
+                            ${renderMonthBreakdown(resource, contractDuration)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            div.innerHTML = `
+                <div class="resource-header">
+                    <input type="text" class="resource-title" name="name" value="${resource.name}"
+                           style="border: none; background: transparent; font-weight: 600; font-size: 0.9rem; width: 150px;"
+                           placeholder="Resource name">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeResource(${resource.id})">Remove</button>
+                </div>
+                <div class="resource-inputs">
+                    <div class="form-group">
+                        <label>Cost Rate</label>
+                        <div class="input-row">
+                            <input type="number" name="rate" min="0" step="0.01" required placeholder="e.g., 8000" value="">
+                            <select name="currency" required>
+                                <option value="USD" selected>USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="CHF">CHF</option>
+                                <option value="AUD">AUD</option>
+                                <option value="CAD">CAD</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Rate Period</label>
+                        <select name="period" required onchange="updateHoursVisibility()">
+                            <option value="hourly">Hourly</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="annual">Annual</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Base FTE <span class="label-hint">(%)</span></label>
+                        <input type="number" name="fte" min="0" max="100" step="1" value="100" required>
+                    </div>
+                </div>
+                ${allocationHTML}
+            `;
+
+            container.appendChild(div);
+        }
+
+        function renderMonthBreakdown(resource, contractDuration) {
+            let html = '';
+            for (let m = 0; m < contractDuration; m++) {
+                const allocation = resource.monthlyAllocations[m] || { fte: 1.0, weeks: [1.0, 1.0, 1.0, 1.0], useWeekly: false };
+                html += `
+                    <div class="month-card" id="month-${resource.id}-${m}">
+                        <div class="month-header" onclick="toggleWeekBreakdown(${resource.id}, ${m})">
+                            <span class="month-title">Month ${m + 1}</span>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span class="month-summary" id="month-summary-${resource.id}-${m}">FTE: ${(allocation.fte * 100).toFixed(0)}%</span>
+                                <input type="number" class="small-input month-fte-input"
+                                       value="${(allocation.fte * 100).toFixed(0)}"
+                                       min="0" max="100" step="1"
+                                       onclick="event.stopPropagation()"
+                                       onchange="updateMonthFTE(${resource.id}, ${m}, this.value)">
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">%</span>
+                                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="week-breakdown hidden" id="weeks-${resource.id}-${m}">
+                            ${renderWeekInputs(resource.id, m, allocation.weeks)}
+                        </div>
+                    </div>
+                `;
+            }
+            return html;
+        }
+
+        function renderWeekInputs(resourceId, monthIndex, weeks) {
+            return weeks.map((fte, w) => `
+                <div class="week-row">
+                    <span class="week-label">Week ${w + 1}</span>
+                    <input type="number" class="small-input week-input"
+                           value="${(fte * 100).toFixed(0)}"
+                           min="0" max="100" step="1"
+                           onchange="updateWeekFTE(${resourceId}, ${monthIndex}, ${w}, this.value)">
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">%</span>
+                </div>
+            `).join('');
+        }
+
+        function removeResource(id) {
+            resources = resources.filter(r => r.id !== id);
+            const element = document.getElementById(`resource-${id}`);
+            if (element) element.remove();
+            updateHoursVisibility();
+        }
+
+        function toggleAllocationBreakdown(resourceId) {
+            const breakdown = document.getElementById(`allocation-breakdown-${resourceId}`);
+            const toggle = breakdown.previousElementSibling;
+            const chevron = toggle.querySelector('.chevron');
+
+            breakdown.classList.toggle('hidden');
+            chevron.classList.toggle('open');
+        }
+
+        function toggleWeekBreakdown(resourceId, monthIndex) {
+            const weeks = document.getElementById(`weeks-${resourceId}-${monthIndex}`);
+            const monthCard = document.getElementById(`month-${resourceId}-${monthIndex}`);
+            const chevron = monthCard.querySelector('.month-header .chevron');
+
+            weeks.classList.toggle('hidden');
+            chevron.classList.toggle('open');
+
+            // Mark as using weekly when expanded
+            const resource = resources.find(r => r.id === resourceId);
+            if (resource && resource.monthlyAllocations[monthIndex]) {
+                resource.monthlyAllocations[monthIndex].useWeekly = !weeks.classList.contains('hidden');
+            }
+        }
+
+        function updateMonthFTE(resourceId, monthIndex, value) {
+            const resource = resources.find(r => r.id === resourceId);
+            if (!resource) return;
+
+            const fte = Math.max(0, Math.min(100, parseFloat(value) || 0)) / 100;
+
+            if (!resource.monthlyAllocations[monthIndex]) {
+                resource.monthlyAllocations[monthIndex] = { fte: 1.0, weeks: [1.0, 1.0, 1.0, 1.0], useWeekly: false };
+            }
+
+            resource.monthlyAllocations[monthIndex].fte = fte;
+
+            // Update all weeks to match if not using weekly breakdown
+            if (!resource.monthlyAllocations[monthIndex].useWeekly) {
+                resource.monthlyAllocations[monthIndex].weeks = [fte, fte, fte, fte];
+
+                // Update week inputs
+                const weeksContainer = document.getElementById(`weeks-${resourceId}-${monthIndex}`);
+                if (weeksContainer) {
+                    const inputs = weeksContainer.querySelectorAll('.week-input');
+                    inputs.forEach(input => input.value = (fte * 100).toFixed(0));
+                }
+            }
+
+            // Update summary
+            const summary = document.getElementById(`month-summary-${resourceId}-${monthIndex}`);
+            if (summary) {
+                summary.textContent = `FTE: ${(fte * 100).toFixed(0)}%`;
+            }
+        }
+
+        function updateWeekFTE(resourceId, monthIndex, weekIndex, value) {
+            const resource = resources.find(r => r.id === resourceId);
+            if (!resource) return;
+
+            const fte = Math.max(0, Math.min(100, parseFloat(value) || 0)) / 100;
+
+            if (!resource.monthlyAllocations[monthIndex]) {
+                resource.monthlyAllocations[monthIndex] = { fte: 1.0, weeks: [1.0, 1.0, 1.0, 1.0], useWeekly: true };
+            }
+
+            resource.monthlyAllocations[monthIndex].weeks[weekIndex] = fte;
+            resource.monthlyAllocations[monthIndex].useWeekly = true;
+
+            // Update month average
+            const weeks = resource.monthlyAllocations[monthIndex].weeks;
+            const avgFte = weeks.reduce((a, b) => a + b, 0) / weeks.length;
+            resource.monthlyAllocations[monthIndex].fte = avgFte;
+
+            // Update month input and summary
+            const monthCard = document.getElementById(`month-${resourceId}-${monthIndex}`);
+            if (monthCard) {
+                const monthInput = monthCard.querySelector('.month-fte-input');
+                const summary = document.getElementById(`month-summary-${resourceId}-${monthIndex}`);
+                if (monthInput) monthInput.value = (avgFte * 100).toFixed(0);
+                if (summary) summary.textContent = `FTE: ${(avgFte * 100).toFixed(0)}%`;
+            }
+        }
+
+        function updateAllocationBreakdowns() {
+            const revenueType = document.getElementById('revenue-type').value;
+            const contractDuration = parseInt(document.getElementById('contract-duration').value) || 0;
+            const showBreakdown = revenueType === 'fixed_price' && contractDuration > 0;
+
+            resources.forEach(resource => {
+                // Initialize allocations for new duration
+                if (showBreakdown) {
+                    for (let m = 0; m < contractDuration; m++) {
+                        if (!resource.monthlyAllocations[m]) {
+                            resource.monthlyAllocations[m] = { fte: 1.0, weeks: [1.0, 1.0, 1.0, 1.0], useWeekly: false };
+                        }
+                    }
+                }
+
+                // Re-render resource card
+                const oldCard = document.getElementById(`resource-${resource.id}`);
+                if (oldCard) {
+                    const nameInput = oldCard.querySelector('input[name="name"]');
+                    const rateInput = oldCard.querySelector('input[name="rate"]');
+                    const currencySelect = oldCard.querySelector('select[name="currency"]');
+                    const periodSelect = oldCard.querySelector('select[name="period"]');
+                    const fteInput = oldCard.querySelector('input[name="fte"]');
+
+                    // Save current values
+                    const savedValues = {
+                        name: nameInput?.value || resource.name,
+                        rate: rateInput?.value || '',
+                        currency: currencySelect?.value || 'USD',
+                        period: periodSelect?.value || 'monthly',
+                        fte: fteInput?.value || '100'
+                    };
+
+                    oldCard.remove();
+                    renderResource(resource, showBreakdown, contractDuration);
+
+                    // Restore values
+                    const newCard = document.getElementById(`resource-${resource.id}`);
+                    if (newCard) {
+                        const newName = newCard.querySelector('input[name="name"]');
+                        const newRate = newCard.querySelector('input[name="rate"]');
+                        const newCurrency = newCard.querySelector('select[name="currency"]');
+                        const newPeriod = newCard.querySelector('select[name="period"]');
+                        const newFte = newCard.querySelector('input[name="fte"]');
+
+                        if (newName) newName.value = savedValues.name;
+                        if (newRate) newRate.value = savedValues.rate;
+                        if (newCurrency) newCurrency.value = savedValues.currency;
+                        if (newPeriod) newPeriod.value = savedValues.period;
+                        if (newFte) newFte.value = savedValues.fte;
+                    }
+                }
+            });
+        }
+
+        // Get resource data from form
+        function getResourceData(resourceId) {
+            const card = document.getElementById(`resource-${resourceId}`);
+            if (!card) return null;
+
+            const resource = resources.find(r => r.id === resourceId);
+
+            return {
+                id: resourceId,
+                name: card.querySelector('input[name="name"]')?.value || `Resource ${resourceId}`,
+                rate: parseFloat(card.querySelector('input[name="rate"]')?.value) || 0,
+                currency: card.querySelector('select[name="currency"]')?.value || 'USD',
+                period: card.querySelector('select[name="period"]')?.value || 'monthly',
+                baseFte: (parseFloat(card.querySelector('input[name="fte"]')?.value) || 100) / 100,
+                monthlyAllocations: resource?.monthlyAllocations || {}
+            };
+        }
+
+        // Calculate costs for a resource over the contract period
+        function calculateResourceCosts(resourceData, contractDuration, hoursPerMonth, upliftPercent) {
+            const rateUSD = convertToUSD(resourceData.rate, resourceData.currency);
 
             let monthlyRateUSD;
-
-            switch (period) {
+            switch (resourceData.period) {
                 case 'hourly':
                     monthlyRateUSD = rateUSD * hoursPerMonth;
                     break;
@@ -677,28 +1106,46 @@
                     break;
             }
 
-            // Apply FTE scaling
-            const baseCostMonthlyUSD = monthlyRateUSD * allocationFTE;
-            const baseCostYearlyUSD = baseCostMonthlyUSD * 12;
+            const monthlyCosts = [];
+            let totalBaseCost = 0;
+            let totalLoadedCost = 0;
 
-            // Apply uplift
-            const loadedCostMonthlyUSD = baseCostMonthlyUSD * (1 + upliftPercent);
-            const loadedCostYearlyUSD = baseCostYearlyUSD * (1 + upliftPercent);
+            const duration = contractDuration || 12; // Default to 12 months if not fixed price
+
+            for (let m = 0; m < duration; m++) {
+                let monthFte = resourceData.baseFte;
+
+                // Check for custom allocation
+                if (resourceData.monthlyAllocations[m]) {
+                    const alloc = resourceData.monthlyAllocations[m];
+                    if (alloc.useWeekly) {
+                        // Average of weekly allocations
+                        monthFte = alloc.weeks.reduce((a, b) => a + b, 0) / WEEKS_PER_MONTH;
+                    } else {
+                        monthFte = alloc.fte;
+                    }
+                }
+
+                const baseCost = monthlyRateUSD * monthFte;
+                const loadedCost = baseCost * (1 + upliftPercent);
+
+                monthlyCosts.push({
+                    month: m + 1,
+                    fte: monthFte,
+                    baseCost,
+                    loadedCost
+                });
+
+                totalBaseCost += baseCost;
+                totalLoadedCost += loadedCost;
+            }
 
             return {
-                baseCostMonthlyUSD,
-                baseCostYearlyUSD,
-                loadedCostMonthlyUSD,
-                loadedCostYearlyUSD,
+                name: resourceData.name,
+                monthlyCosts,
+                totalBaseCost,
+                totalLoadedCost
             };
-        }
-
-        // Calculate APM
-        function calculateAPM(revenue, loadedCost) {
-            if (revenue <= 0) {
-                throw new Error('Revenue must be greater than zero');
-            }
-            return 1 - (loadedCost / revenue);
         }
 
         // Main calculation function
@@ -708,127 +1155,215 @@
             const revenueAmount = parseFloat(document.getElementById('revenue-amount').value);
             const revenueCurrency = document.getElementById('revenue-currency').value;
             const contractDuration = parseInt(document.getElementById('contract-duration').value) || 0;
-
-            const costPeriod = document.getElementById('cost-period').value;
-            const costAmount = parseFloat(document.getElementById('cost-amount').value);
-            const costCurrency = document.getElementById('cost-currency').value;
-            const allocationPercent = parseFloat(document.getElementById('allocation').value);
-
             const upliftPercent = parseFloat(document.getElementById('uplift').value) / 100;
-            const hoursPerMonth = parseFloat(document.getElementById('hours-per-month').value);
+            const hoursPerMonth = parseFloat(document.getElementById('hours-per-month').value) || 160;
             const reportingCurrency = document.getElementById('reporting-currency').value;
 
             // Validation
-            if (isNaN(revenueAmount) || revenueAmount < 0) {
-                throw new Error('Please enter a valid revenue amount');
-            }
-            if (isNaN(costAmount) || costAmount < 0) {
-                throw new Error('Please enter a valid cost amount');
+            if (isNaN(revenueAmount) || revenueAmount <= 0) {
+                throw new Error('Please enter a valid revenue amount greater than zero');
             }
             if (revenueType === 'fixed_price' && (!contractDuration || contractDuration < 1)) {
-                throw new Error('Please enter a valid contract duration');
+                throw new Error('Please enter a valid contract duration for fixed price');
             }
-            if (allocationPercent < 0 || allocationPercent > 100) {
-                throw new Error('FTE allocation must be between 0 and 100');
+            if (resources.length === 0) {
+                throw new Error('Please add at least one resource');
             }
 
-            const allocationFTE = allocationPercent / 100;
+            // Determine calculation period
+            let calcDuration = contractDuration;
+            if (revenueType !== 'fixed_price') {
+                calcDuration = 12; // Calculate for 1 year
+            }
 
-            // Calculate revenue
-            const revenue = calculateRevenue(revenueType, revenueAmount, revenueCurrency, hoursPerMonth, contractDuration);
+            // Calculate revenue in USD
+            const revenueAmountUSD = convertToUSD(revenueAmount, revenueCurrency);
+            let totalRevenueUSD;
+            let monthlyRevenueUSD;
 
-            // Calculate cost
-            const cost = calculateCost(costPeriod, costAmount, costCurrency, hoursPerMonth, allocationFTE, upliftPercent);
+            switch (revenueType) {
+                case 'hourly':
+                    monthlyRevenueUSD = revenueAmountUSD * hoursPerMonth;
+                    totalRevenueUSD = monthlyRevenueUSD * calcDuration;
+                    break;
+                case 'monthly':
+                    monthlyRevenueUSD = revenueAmountUSD;
+                    totalRevenueUSD = monthlyRevenueUSD * calcDuration;
+                    break;
+                case 'annual':
+                    totalRevenueUSD = revenueAmountUSD * (calcDuration / 12);
+                    monthlyRevenueUSD = revenueAmountUSD / 12;
+                    break;
+                case 'fixed_price':
+                    totalRevenueUSD = revenueAmountUSD;
+                    monthlyRevenueUSD = totalRevenueUSD / calcDuration;
+                    break;
+            }
+
+            // Calculate costs for all resources
+            const resourceResults = [];
+            let totalBaseCostUSD = 0;
+            let totalLoadedCostUSD = 0;
+            const monthlyTotals = [];
+
+            // Initialize monthly totals
+            for (let m = 0; m < calcDuration; m++) {
+                monthlyTotals.push({
+                    month: m + 1,
+                    revenue: monthlyRevenueUSD,
+                    baseCost: 0,
+                    loadedCost: 0,
+                    resources: []
+                });
+            }
+
+            // Calculate each resource
+            resources.forEach(resource => {
+                const data = getResourceData(resource.id);
+                if (!data || data.rate <= 0) return;
+
+                const costs = calculateResourceCosts(data, calcDuration, hoursPerMonth, upliftPercent);
+                resourceResults.push(costs);
+
+                totalBaseCostUSD += costs.totalBaseCost;
+                totalLoadedCostUSD += costs.totalLoadedCost;
+
+                // Add to monthly totals
+                costs.monthlyCosts.forEach((mc, idx) => {
+                    if (monthlyTotals[idx]) {
+                        monthlyTotals[idx].baseCost += mc.baseCost;
+                        monthlyTotals[idx].loadedCost += mc.loadedCost;
+                        monthlyTotals[idx].resources.push({
+                            name: costs.name,
+                            fte: mc.fte,
+                            baseCost: mc.baseCost,
+                            loadedCost: mc.loadedCost
+                        });
+                    }
+                });
+            });
 
             // Calculate APM
-            const apmMonthly = calculateAPM(revenue.monthlyUSD, cost.loadedCostMonthlyUSD);
-            const apmYearly = calculateAPM(revenue.yearlyUSD, cost.loadedCostYearlyUSD);
+            const apm = 1 - (totalLoadedCostUSD / totalRevenueUSD);
+            const grossProfitUSD = totalRevenueUSD - totalLoadedCostUSD;
 
             // Convert to reporting currency
-            const results = {
-                revenueMonthly: convertFromUSD(revenue.monthlyUSD, reportingCurrency),
-                revenueYearly: convertFromUSD(revenue.yearlyUSD, reportingCurrency),
-                baseCostMonthly: convertFromUSD(cost.baseCostMonthlyUSD, reportingCurrency),
-                baseCostYearly: convertFromUSD(cost.baseCostYearlyUSD, reportingCurrency),
-                loadedCostMonthly: convertFromUSD(cost.loadedCostMonthlyUSD, reportingCurrency),
-                loadedCostYearly: convertFromUSD(cost.loadedCostYearlyUSD, reportingCurrency),
-                apmMonthly,
-                apmYearly,
+            return {
                 reportingCurrency,
+                revenueType,
+                contractDuration: calcDuration,
+                totalRevenue: convertFromUSD(totalRevenueUSD, reportingCurrency),
+                monthlyRevenue: convertFromUSD(monthlyRevenueUSD, reportingCurrency),
+                totalBaseCost: convertFromUSD(totalBaseCostUSD, reportingCurrency),
+                totalLoadedCost: convertFromUSD(totalLoadedCostUSD, reportingCurrency),
+                grossProfit: convertFromUSD(grossProfitUSD, reportingCurrency),
+                apm,
+                resourceResults: resourceResults.map(r => ({
+                    name: r.name,
+                    totalBaseCost: convertFromUSD(r.totalBaseCost, reportingCurrency),
+                    totalLoadedCost: convertFromUSD(r.totalLoadedCost, reportingCurrency)
+                })),
+                monthlyTotals: monthlyTotals.map(m => ({
+                    month: m.month,
+                    revenue: convertFromUSD(m.revenue, reportingCurrency),
+                    baseCost: convertFromUSD(m.baseCost, reportingCurrency),
+                    loadedCost: convertFromUSD(m.loadedCost, reportingCurrency),
+                    profit: convertFromUSD(m.revenue - m.loadedCost, reportingCurrency),
+                    apm: m.revenue > 0 ? 1 - (m.loadedCost / m.revenue) : 0
+                }))
             };
-
-            // Fixed price contract
-            if (revenueType === 'fixed_price') {
-                const totalLoadedCostUSD = cost.loadedCostMonthlyUSD * contractDuration;
-                const apmContract = calculateAPM(revenue.totalContractUSD, totalLoadedCostUSD);
-
-                results.contractDuration = contractDuration;
-                results.contractRevenue = convertFromUSD(revenue.totalContractUSD, reportingCurrency);
-                results.contractCost = convertFromUSD(totalLoadedCostUSD, reportingCurrency);
-                results.apmContract = apmContract;
-            }
-
-            return results;
         }
 
-        // Update UI with results
+        // Display results
         function displayResults(results) {
             const currency = results.reportingCurrency;
 
-            // Revenue
-            document.getElementById('revenue-monthly').textContent = formatCurrency(results.revenueMonthly, currency);
-            document.getElementById('revenue-yearly').textContent = formatCurrency(results.revenueYearly, currency);
-
-            // Base Cost
-            document.getElementById('base-cost-monthly').textContent = formatCurrency(results.baseCostMonthly, currency);
-            document.getElementById('base-cost-yearly').textContent = formatCurrency(results.baseCostYearly, currency);
-
-            // Loaded Cost
-            document.getElementById('loaded-cost-monthly').textContent = formatCurrency(results.loadedCostMonthly, currency);
-            document.getElementById('loaded-cost-yearly').textContent = formatCurrency(results.loadedCostYearly, currency);
-
-            // APM
-            document.getElementById('apm-monthly').textContent = formatPercent(results.apmMonthly);
-            document.getElementById('apm-yearly').textContent = formatPercent(results.apmYearly);
-
             // APM Display
             const apmDisplay = document.getElementById('apm-display');
-            const apmValue = document.getElementById('apm-monthly-value');
-            apmValue.textContent = formatPercent(results.apmMonthly);
+            const apmValue = document.getElementById('apm-value');
+            apmValue.textContent = formatPercent(results.apm);
 
             apmDisplay.classList.remove('positive', 'negative', 'break-even');
-            if (results.apmMonthly > 0.01) {
+            if (results.apm > 0.01) {
                 apmDisplay.classList.add('positive');
-            } else if (results.apmMonthly < -0.01) {
+            } else if (results.apm < -0.01) {
                 apmDisplay.classList.add('negative');
             } else {
                 apmDisplay.classList.add('break-even');
             }
 
-            // Contract summary
-            const contractSummary = document.getElementById('contract-summary');
-            if (results.contractDuration) {
-                contractSummary.classList.remove('hidden');
-                document.getElementById('contract-duration-display').textContent = results.contractDuration + ' months';
-                document.getElementById('contract-revenue').textContent = formatCurrency(results.contractRevenue, currency);
-                document.getElementById('contract-cost').textContent = formatCurrency(results.contractCost, currency);
-                document.getElementById('contract-apm').textContent = formatPercent(results.apmContract);
-            } else {
-                contractSummary.classList.add('hidden');
-            }
+            // Summary tab
+            document.getElementById('total-revenue').textContent = formatCurrency(results.totalRevenue, currency);
+            document.getElementById('avg-monthly-revenue').textContent = formatCurrency(results.monthlyRevenue, currency);
+            document.getElementById('total-base-cost').textContent = formatCurrency(results.totalBaseCost, currency);
+            document.getElementById('total-loaded-cost').textContent = formatCurrency(results.totalLoadedCost, currency);
+            document.getElementById('gross-profit').textContent = formatCurrency(results.grossProfit, currency);
+
+            // Monthly tab
+            const monthlyContainer = document.getElementById('monthly-results');
+            let monthlyHTML = `
+                <div class="monthly-result-row header">
+                    <span>Month</span>
+                    <span>Revenue</span>
+                    <span>Loaded Cost</span>
+                    <span>APM</span>
+                </div>
+            `;
+            results.monthlyTotals.forEach(m => {
+                const apmClass = m.apm > 0.01 ? 'color: var(--success)' : (m.apm < -0.01 ? 'color: var(--danger)' : 'color: var(--warning)');
+                monthlyHTML += `
+                    <div class="monthly-result-row">
+                        <span>Month ${m.month}</span>
+                        <span>${formatCurrency(m.revenue, currency)}</span>
+                        <span>${formatCurrency(m.loadedCost, currency)}</span>
+                        <span style="${apmClass}; font-weight: 600;">${formatPercent(m.apm)}</span>
+                    </div>
+                `;
+            });
+            monthlyContainer.innerHTML = monthlyHTML;
+
+            // Resources tab
+            const resourceContainer = document.getElementById('resource-results');
+            let resourceHTML = '';
+            results.resourceResults.forEach(r => {
+                resourceHTML += `
+                    <div class="result-section">
+                        <div class="result-section-title">${r.name}</div>
+                        <div class="result-row">
+                            <span class="result-label">Total Base Cost</span>
+                            <span class="result-value">${formatCurrency(r.totalBaseCost, currency)}</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Loaded Cost</span>
+                            <span class="result-value">${formatCurrency(r.totalLoadedCost, currency)}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            resourceContainer.innerHTML = resourceHTML;
         }
 
-        // Show/hide contract duration field
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+
+            document.getElementById('tab-summary').classList.add('hidden');
+            document.getElementById('tab-monthly').classList.add('hidden');
+            document.getElementById('tab-resources').classList.add('hidden');
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        }
+
+        // Event listeners
         document.getElementById('revenue-type').addEventListener('change', function() {
-            const group = document.getElementById('contract-duration-group');
-            if (this.value === 'fixed_price') {
-                group.classList.remove('hidden');
-            } else {
-                group.classList.add('hidden');
-            }
+            updateContractVisibility();
+            updateHoursVisibility();
         });
 
-        // Form submission
+        document.getElementById('contract-duration').addEventListener('change', function() {
+            updateAllocationBreakdowns();
+        });
+
         document.getElementById('calculator-form').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -837,7 +1372,6 @@
             const errorContainer = document.getElementById('error-container');
             const errorMessage = document.getElementById('error-message');
 
-            // Hide error
             errorContainer.classList.add('hidden');
 
             try {
@@ -845,6 +1379,7 @@
                 displayResults(results);
                 placeholder.classList.add('hidden');
                 content.classList.remove('hidden');
+                showTab('summary');
             } catch (error) {
                 errorMessage.textContent = error.message;
                 errorContainer.classList.remove('hidden');
@@ -852,6 +1387,9 @@
                 content.classList.remove('hidden');
             }
         });
+
+        // Initialize with one resource
+        addResource();
     </script>
 </body>
 </html>
