@@ -417,9 +417,26 @@
         .btn-success { background: var(--success); color: white; }
         .btn-success:hover { background: #059669; }
 
-        /* Resource input row with uplift */
+        /* Resource input rows */
         .resource-inputs-4 { display: grid; grid-template-columns: 2fr 1fr 0.8fr 0.8fr; gap: 0.5rem; align-items: end; }
         @media (max-width: 700px) { .resource-inputs-4 { grid-template-columns: 1fr 1fr; } }
+
+        .resource-row-1 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; align-items: end; margin-bottom: 0.5rem; }
+        .resource-row-2 { display: grid; grid-template-columns: 1.5fr 1.5fr 1fr 0.8fr 0.8fr; gap: 0.5rem; align-items: end; }
+        @media (max-width: 800px) {
+            .resource-row-1 { grid-template-columns: 1fr 1fr; }
+            .resource-row-2 { grid-template-columns: 1fr 1fr; }
+        }
+
+        .apm-badge {
+            padding: 0.5rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        .apm-badge.positive { background: var(--success-light); color: var(--success); }
+        .apm-badge.negative { background: var(--danger-light); color: var(--danger); }
 
         .error-message {
             background: var(--danger-light);
@@ -535,8 +552,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="default-uplift">Default Uplift % <span class="label-hint">(for new resources)</span></label>
-                                <input type="number" id="default-uplift" min="0" step="0.1" value="25">
+                                <label for="cost-buffer">Cost Buffer % <span class="label-hint">(overhead on total)</span></label>
+                                <input type="number" id="cost-buffer" min="0" step="0.1" value="0">
                             </div>
                         </div>
                     </div>
@@ -610,11 +627,11 @@
                         <div class="result-section">
                             <div class="result-section-title">Cost</div>
                             <div class="result-row">
-                                <span class="result-label">Total Base Cost</span>
+                                <span class="result-label">Total Resource Cost</span>
                                 <span class="result-value" id="total-base-cost">--</span>
                             </div>
                             <div class="result-row">
-                                <span class="result-label">Total Loaded Cost</span>
+                                <span class="result-label">Total Cost (with Buffer)</span>
                                 <span class="result-value" id="total-loaded-cost">--</span>
                             </div>
                         </div>
@@ -654,8 +671,8 @@
 
                     <div class="formula-box">
                         <strong>Formula:</strong>
-                        <code>Loaded Cost = Base Cost × (1 + Uplift%)</code> |
-                        <code>APM = 1 − (Loaded Cost / Revenue)</code>
+                        <code>Resource APM = 1 − (Cost Rate / Charge Rate)</code> |
+                        <code>Total APM = 1 − (Total Cost × (1 + Buffer%) / Total Revenue)</code>
                     </div>
                 </div>
             </div>
@@ -830,8 +847,6 @@
                 `;
             }
 
-            const defaultUplift = parseFloat(document.getElementById('default-uplift').value) || 25;
-
             div.innerHTML = `
                 <div class="resource-header">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -840,11 +855,35 @@
                     </div>
                     <button type="button" class="btn btn-danger btn-sm" onclick="removeResource(${resource.id})">Remove</button>
                 </div>
-                <div class="resource-inputs-4">
+                <div class="resource-row-1">
                     <div class="form-group">
-                        <label>Cost Rate</label>
+                        <label>Role</label>
+                        <input type="text" name="role" placeholder="e.g., Developer">
+                    </div>
+                    <div class="form-group">
+                        <label>Level</label>
+                        <select name="level">
+                            <option value="junior">Junior</option>
+                            <option value="mid" selected>Mid</option>
+                            <option value="senior">Senior</option>
+                            <option value="lead">Lead</option>
+                            <option value="principal">Principal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Rate Period</label>
+                        <select name="period" required onchange="updateHoursVisibility()">
+                            <option value="hourly">Hourly</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="annual">Annual</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="resource-row-2">
+                    <div class="form-group">
+                        <label>Cost Rate <span class="label-hint">(salary/cost)</span></label>
                         <div class="input-row">
-                            <input type="number" name="rate" min="0" step="0.01" required placeholder="e.g., 8000">
+                            <input type="number" name="rate" min="0" step="0.01" required placeholder="e.g., 5000" oninput="updateResourceAPM(${resource.id})">
                             <select name="currency" required>
                                 <option value="USD" selected>USD</option>
                                 <option value="EUR">EUR</option>
@@ -856,20 +895,16 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Rate Period</label>
-                        <select name="period" required onchange="updateHoursVisibility()">
-                            <option value="hourly">Hourly</option>
-                            <option value="monthly" selected>Monthly</option>
-                            <option value="annual">Annual</option>
-                        </select>
+                        <label>Rate Charged <span class="label-hint">(to client)</span></label>
+                        <input type="number" name="rate-charged" min="0" step="0.01" required placeholder="e.g., 8000" oninput="updateResourceAPM(${resource.id})">
                     </div>
                     <div class="form-group">
-                        <label>Uplift %</label>
-                        <input type="number" name="uplift" min="0" step="0.1" value="${defaultUplift}" placeholder="25">
+                        <label>APM</label>
+                        <div class="apm-badge positive" id="resource-apm-${resource.id}">--%</div>
                     </div>
                     <div class="form-group">
                         <label>Avg FTE</label>
-                        <div class="avg-fte-display" id="avg-fte-${resource.id}">${(avgFTE * 100).toFixed(0)}% avg</div>
+                        <div class="avg-fte-display" id="avg-fte-${resource.id}">${(avgFTE * 100).toFixed(0)}%</div>
                     </div>
                 </div>
                 ${allocationHTML}
@@ -1025,16 +1060,14 @@
 
                 const oldCard = document.getElementById(`resource-${resource.id}`);
                 if (oldCard) {
-                    const nameInput = oldCard.querySelector('input[name="name"]');
-                    const rateInput = oldCard.querySelector('input[name="rate"]');
-                    const currencySelect = oldCard.querySelector('select[name="currency"]');
-                    const periodSelect = oldCard.querySelector('select[name="period"]');
-
                     const savedValues = {
-                        name: nameInput?.value || resource.name,
-                        rate: rateInput?.value || '',
-                        currency: currencySelect?.value || 'USD',
-                        period: periodSelect?.value || 'monthly'
+                        name: oldCard.querySelector('input[name="name"]')?.value || resource.name,
+                        role: oldCard.querySelector('input[name="role"]')?.value || '',
+                        level: oldCard.querySelector('select[name="level"]')?.value || 'mid',
+                        rate: oldCard.querySelector('input[name="rate"]')?.value || '',
+                        rateCharged: oldCard.querySelector('input[name="rate-charged"]')?.value || '',
+                        currency: oldCard.querySelector('select[name="currency"]')?.value || 'USD',
+                        period: oldCard.querySelector('select[name="period"]')?.value || 'monthly'
                     };
 
                     resource.name = savedValues.name;
@@ -1045,12 +1078,39 @@
                     const newCard = document.getElementById(`resource-${resource.id}`);
                     if (newCard) {
                         newCard.querySelector('input[name="name"]').value = savedValues.name;
+                        newCard.querySelector('input[name="role"]').value = savedValues.role;
+                        newCard.querySelector('select[name="level"]').value = savedValues.level;
                         newCard.querySelector('input[name="rate"]').value = savedValues.rate;
+                        newCard.querySelector('input[name="rate-charged"]').value = savedValues.rateCharged;
                         newCard.querySelector('select[name="currency"]').value = savedValues.currency;
                         newCard.querySelector('select[name="period"]').value = savedValues.period;
+                        updateResourceAPM(resource.id);
                     }
                 }
             });
+        }
+
+        // Update the APM badge for a resource based on rate vs rate charged
+        function updateResourceAPM(resourceId) {
+            const card = document.getElementById(`resource-${resourceId}`);
+            if (!card) return;
+
+            const rate = parseFloat(card.querySelector('input[name="rate"]')?.value) || 0;
+            const rateCharged = parseFloat(card.querySelector('input[name="rate-charged"]')?.value) || 0;
+            const apmBadge = document.getElementById(`resource-apm-${resourceId}`);
+
+            if (apmBadge) {
+                if (rateCharged > 0 && rate > 0) {
+                    const apm = 1 - (rate / rateCharged);
+                    apmBadge.textContent = (apm * 100).toFixed(1) + '%';
+                    apmBadge.classList.remove('positive', 'negative');
+                    apmBadge.classList.add(apm >= 0 ? 'positive' : 'negative');
+                } else {
+                    apmBadge.textContent = '--%';
+                    apmBadge.classList.remove('positive', 'negative');
+                    apmBadge.classList.add('positive');
+                }
+            }
         }
 
         function getResourceData(resourceId) {
@@ -1058,35 +1118,47 @@
             if (!card) return null;
 
             const resource = resources.find(r => r.id === resourceId);
-            const defaultUplift = parseFloat(document.getElementById('default-uplift').value) || 25;
+            const rate = parseFloat(card.querySelector('input[name="rate"]')?.value) || 0;
+            const rateCharged = parseFloat(card.querySelector('input[name="rate-charged"]')?.value) || 0;
 
             return {
                 id: resourceId,
                 name: card.querySelector('input[name="name"]')?.value || `Resource ${resourceId}`,
+                role: card.querySelector('input[name="role"]')?.value || '',
+                level: card.querySelector('select[name="level"]')?.value || 'mid',
                 color: resource?.color || CHART_COLORS[0],
-                rate: parseFloat(card.querySelector('input[name="rate"]')?.value) || 0,
+                rate: rate,
+                rateCharged: rateCharged,
                 currency: card.querySelector('select[name="currency"]')?.value || 'USD',
                 period: card.querySelector('select[name="period"]')?.value || 'monthly',
-                uplift: parseFloat(card.querySelector('input[name="uplift"]')?.value) || defaultUplift,
                 monthlyAllocations: resource?.monthlyAllocations || {}
             };
         }
 
-        function calculateResourceCosts(resourceData, contractDuration, hoursPerMonth, totalRevenueUSD) {
-            const rateUSD = convertToUSD(resourceData.rate, resourceData.currency);
-            const upliftPercent = (resourceData.uplift || 25) / 100;
+        function calculateResourceCosts(resourceData, contractDuration, hoursPerMonth) {
+            const costRateUSD = convertToUSD(resourceData.rate, resourceData.currency);
+            const chargeRateUSD = convertToUSD(resourceData.rateCharged, resourceData.currency);
 
-            let monthlyRateUSD;
+            let monthlyCostRateUSD, monthlyChargeRateUSD;
             switch (resourceData.period) {
-                case 'hourly': monthlyRateUSD = rateUSD * hoursPerMonth; break;
-                case 'monthly': monthlyRateUSD = rateUSD; break;
-                case 'annual': monthlyRateUSD = rateUSD / 12; break;
+                case 'hourly':
+                    monthlyCostRateUSD = costRateUSD * hoursPerMonth;
+                    monthlyChargeRateUSD = chargeRateUSD * hoursPerMonth;
+                    break;
+                case 'monthly':
+                    monthlyCostRateUSD = costRateUSD;
+                    monthlyChargeRateUSD = chargeRateUSD;
+                    break;
+                case 'annual':
+                    monthlyCostRateUSD = costRateUSD / 12;
+                    monthlyChargeRateUSD = chargeRateUSD / 12;
+                    break;
             }
 
             const monthlyCosts = [];
             const weeklyAllocations = [];
-            let totalBaseCost = 0;
-            let totalLoadedCost = 0;
+            let totalCost = 0;
+            let totalRevenue = 0;
             let totalFTE = 0;
 
             const duration = contractDuration || 12;
@@ -1106,31 +1178,31 @@
                     }
                 }
 
-                const baseCost = monthlyRateUSD * monthFte;
-                const loadedCost = baseCost * (1 + upliftPercent);
+                const cost = monthlyCostRateUSD * monthFte;
+                const revenue = monthlyChargeRateUSD * monthFte;
 
-                monthlyCosts.push({ month: m + 1, fte: monthFte, baseCost, loadedCost, weeks: weekFtes });
+                monthlyCosts.push({ month: m + 1, fte: monthFte, cost, revenue, weeks: weekFtes });
                 weeklyAllocations.push(weekFtes);
 
-                totalBaseCost += baseCost;
-                totalLoadedCost += loadedCost;
+                totalCost += cost;
+                totalRevenue += revenue;
                 totalFTE += monthFte;
             }
 
             const avgUtilization = totalFTE / duration;
-            const resourceCostShare = totalRevenueUSD > 0 ? (totalLoadedCost / totalRevenueUSD) : 0;
-            const resourceAPM = totalRevenueUSD > 0 ? 1 - resourceCostShare : 0;
+            // Resource APM = (Rate Charged - Rate) / Rate Charged = 1 - (Cost / Revenue)
+            const resourceAPM = totalRevenue > 0 ? 1 - (totalCost / totalRevenue) : 0;
 
             return {
                 name: resourceData.name,
+                role: resourceData.role,
+                level: resourceData.level,
                 color: resourceData.color,
-                uplift: resourceData.uplift,
                 monthlyCosts,
                 weeklyAllocations,
-                totalBaseCost,
-                totalLoadedCost,
+                totalCost,
+                totalRevenue,
                 avgUtilization,
-                costShare: resourceCostShare,
                 apm: resourceAPM
             };
         }
@@ -1182,74 +1254,85 @@
                     break;
             }
 
+            const bufferPercent = parseFloat(document.getElementById('cost-buffer').value) / 100 || 0;
+
             const resourceResults = [];
-            let totalBaseCostUSD = 0;
-            let totalLoadedCostUSD = 0;
+            let totalResourceCostUSD = 0;
+            let totalResourceRevenueUSD = 0;
             const monthlyTotals = [];
 
             for (let m = 0; m < calcDuration; m++) {
-                monthlyTotals.push({ month: m + 1, revenue: monthlyRevenueUSD, baseCost: 0, loadedCost: 0, resources: [] });
+                monthlyTotals.push({ month: m + 1, revenue: monthlyRevenueUSD, cost: 0, resourceRevenue: 0, resources: [] });
             }
 
             resources.forEach(resource => {
                 const data = getResourceData(resource.id);
-                if (!data || data.rate <= 0) return;
+                if (!data || data.rate <= 0 || data.rateCharged <= 0) return;
 
-                const costs = calculateResourceCosts(data, calcDuration, hoursPerMonth, totalRevenueUSD);
+                const costs = calculateResourceCosts(data, calcDuration, hoursPerMonth);
                 resourceResults.push(costs);
 
-                totalBaseCostUSD += costs.totalBaseCost;
-                totalLoadedCostUSD += costs.totalLoadedCost;
+                totalResourceCostUSD += costs.totalCost;
+                totalResourceRevenueUSD += costs.totalRevenue;
 
                 costs.monthlyCosts.forEach((mc, idx) => {
                     if (monthlyTotals[idx]) {
-                        monthlyTotals[idx].baseCost += mc.baseCost;
-                        monthlyTotals[idx].loadedCost += mc.loadedCost;
+                        monthlyTotals[idx].cost += mc.cost;
+                        monthlyTotals[idx].resourceRevenue += mc.revenue;
                         monthlyTotals[idx].resources.push({
                             name: costs.name,
                             fte: mc.fte,
-                            baseCost: mc.baseCost,
-                            loadedCost: mc.loadedCost
+                            cost: mc.cost,
+                            revenue: mc.revenue
                         });
                     }
                 });
             });
 
-            const apm = 1 - (totalLoadedCostUSD / totalRevenueUSD);
-            const grossProfitUSD = totalRevenueUSD - totalLoadedCostUSD;
+            // Apply buffer to total cost
+            const totalCostWithBufferUSD = totalResourceCostUSD * (1 + bufferPercent);
+
+            // Use fixed price revenue if set, otherwise use resource revenue total
+            const effectiveRevenueUSD = revenueType === 'fixed_price' ? totalRevenueUSD : totalResourceRevenueUSD;
+
+            // Overall APM = 1 - (Total Cost with Buffer / Total Revenue)
+            const apm = effectiveRevenueUSD > 0 ? 1 - (totalCostWithBufferUSD / effectiveRevenueUSD) : 0;
+            const grossProfitUSD = effectiveRevenueUSD - totalCostWithBufferUSD;
 
             return {
                 reportingCurrency,
                 revenueType,
                 contractDuration: calcDuration,
-                totalRevenue: convertFromUSD(totalRevenueUSD, reportingCurrency),
-                totalRevenueUSD,
-                monthlyRevenue: convertFromUSD(monthlyRevenueUSD, reportingCurrency),
-                totalBaseCost: convertFromUSD(totalBaseCostUSD, reportingCurrency),
-                totalLoadedCost: convertFromUSD(totalLoadedCostUSD, reportingCurrency),
-                totalLoadedCostUSD,
+                bufferPercent: bufferPercent * 100,
+                totalRevenue: convertFromUSD(effectiveRevenueUSD, reportingCurrency),
+                totalRevenueUSD: effectiveRevenueUSD,
+                monthlyRevenue: convertFromUSD(effectiveRevenueUSD / calcDuration, reportingCurrency),
+                totalCost: convertFromUSD(totalResourceCostUSD, reportingCurrency),
+                totalCostWithBuffer: convertFromUSD(totalCostWithBufferUSD, reportingCurrency),
+                totalCostWithBufferUSD: totalCostWithBufferUSD,
                 grossProfit: convertFromUSD(grossProfitUSD, reportingCurrency),
                 apm,
                 resourceResults: resourceResults.map(r => ({
                     name: r.name,
+                    role: r.role,
+                    level: r.level,
                     color: r.color,
-                    uplift: r.uplift,
-                    totalBaseCost: convertFromUSD(r.totalBaseCost, reportingCurrency),
-                    totalLoadedCost: convertFromUSD(r.totalLoadedCost, reportingCurrency),
-                    totalLoadedCostUSD: r.totalLoadedCost,
+                    totalCost: convertFromUSD(r.totalCost, reportingCurrency),
+                    totalRevenue: convertFromUSD(r.totalRevenue, reportingCurrency),
+                    totalCostUSD: r.totalCost,
+                    totalRevenueUSD: r.totalRevenue,
                     avgUtilization: r.avgUtilization,
-                    costShare: r.costShare,
                     apm: r.apm,
                     weeklyAllocations: r.weeklyAllocations,
                     monthlyCosts: r.monthlyCosts
                 })),
                 monthlyTotals: monthlyTotals.map(m => ({
                     month: m.month,
-                    revenue: convertFromUSD(m.revenue, reportingCurrency),
-                    baseCost: convertFromUSD(m.baseCost, reportingCurrency),
-                    loadedCost: convertFromUSD(m.loadedCost, reportingCurrency),
-                    profit: convertFromUSD(m.revenue - m.loadedCost, reportingCurrency),
-                    apm: m.revenue > 0 ? 1 - (m.loadedCost / m.revenue) : 0
+                    revenue: convertFromUSD(m.resourceRevenue, reportingCurrency),
+                    cost: convertFromUSD(m.cost, reportingCurrency),
+                    costWithBuffer: convertFromUSD(m.cost * (1 + bufferPercent), reportingCurrency),
+                    profit: convertFromUSD(m.resourceRevenue - m.cost * (1 + bufferPercent), reportingCurrency),
+                    apm: m.resourceRevenue > 0 ? 1 - (m.cost * (1 + bufferPercent) / m.resourceRevenue) : 0
                 }))
             };
         }
@@ -1264,7 +1347,7 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const totalCost = results.totalLoadedCostUSD;
+            const totalCostWithBuffer = results.totalCostWithBufferUSD;
             const totalRevenue = results.totalRevenueUSD;
 
             if (totalRevenue <= 0) return;
@@ -1273,10 +1356,17 @@
             let usedCostShare = 0;
 
             results.resourceResults.forEach(r => {
-                const share = r.totalLoadedCostUSD / totalRevenue;
+                const share = r.totalCostUSD / totalRevenue;
                 data.push({ name: r.name, value: share, color: r.color });
                 usedCostShare += share;
             });
+
+            // Add buffer share if present
+            if (results.bufferPercent > 0) {
+                const bufferShare = usedCostShare * (results.bufferPercent / 100);
+                data.push({ name: 'Buffer', value: bufferShare, color: '#f59e0b' });
+                usedCostShare += bufferShare;
+            }
 
             const profitShare = Math.max(0, 1 - usedCostShare);
             if (profitShare > 0.001) {
@@ -1335,8 +1425,8 @@
             // Summary tab
             document.getElementById('total-revenue').textContent = formatCurrency(results.totalRevenue, currency);
             document.getElementById('avg-monthly-revenue').textContent = formatCurrency(results.monthlyRevenue, currency);
-            document.getElementById('total-base-cost').textContent = formatCurrency(results.totalBaseCost, currency);
-            document.getElementById('total-loaded-cost').textContent = formatCurrency(results.totalLoadedCost, currency);
+            document.getElementById('total-base-cost').textContent = formatCurrency(results.totalCost, currency);
+            document.getElementById('total-loaded-cost').textContent = formatCurrency(results.totalCostWithBuffer, currency);
             document.getElementById('gross-profit').textContent = formatCurrency(results.grossProfit, currency);
             document.getElementById('remaining-margin').textContent = formatPercent(results.apm);
 
@@ -1349,7 +1439,7 @@
                 <div class="monthly-result-row header">
                     <span>Month</span>
                     <span>Revenue</span>
-                    <span>Loaded Cost</span>
+                    <span>Cost (+ Buffer)</span>
                     <span>APM</span>
                 </div>
             `;
@@ -1359,48 +1449,53 @@
                     <div class="monthly-result-row">
                         <span>Month ${m.month}</span>
                         <span>${formatCurrency(m.revenue, currency)}</span>
-                        <span>${formatCurrency(m.loadedCost, currency)}</span>
+                        <span>${formatCurrency(m.costWithBuffer, currency)}</span>
                         <span style="${apmClass}; font-weight: 600;">${formatPercent(m.apm)}</span>
                     </div>
                 `;
             });
             monthlyContainer.innerHTML = monthlyHTML;
 
-            // Resources tab with enhanced details (APM, loaded cost, utilization, uplift)
+            // Resources tab with enhanced details (name, role, level, rate, rate charged, APM, FTE avg)
             const resourceContainer = document.getElementById('resource-results');
             let resourceHTML = '';
             results.resourceResults.forEach(r => {
                 const apmColor = r.apm > 0 ? 'var(--success)' : 'var(--danger)';
+                const levelLabel = r.level ? r.level.charAt(0).toUpperCase() + r.level.slice(1) : '';
+                const roleDisplay = r.role ? `${r.role}${levelLabel ? ' (' + levelLabel + ')' : ''}` : levelLabel;
 
                 resourceHTML += `
                     <div class="resource-result-card">
                         <div class="resource-result-header">
                             <div class="resource-result-name">
                                 <span class="resource-color-dot" style="background: ${r.color};"></span>
-                                ${r.name}
+                                <div>
+                                    <div>${r.name}</div>
+                                    ${roleDisplay ? `<div style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted);">${roleDisplay}</div>` : ''}
+                                </div>
                             </div>
                             <div style="font-weight: 600; color: ${apmColor};">APM: ${formatPercent(r.apm)}</div>
                         </div>
                         <div class="resource-stats" style="grid-template-columns: repeat(5, 1fr);">
                             <div class="stat-item">
-                                <div class="stat-label">Loaded Cost</div>
-                                <div class="stat-value">${formatCurrency(r.totalLoadedCost, currency)}</div>
+                                <div class="stat-label">Cost Rate</div>
+                                <div class="stat-value">${formatCurrency(r.totalCost / results.contractDuration, currency)}/mo</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-label">Base Cost</div>
-                                <div class="stat-value">${formatCurrency(r.totalBaseCost, currency)}</div>
+                                <div class="stat-label">Charge Rate</div>
+                                <div class="stat-value">${formatCurrency(r.totalRevenue / results.contractDuration, currency)}/mo</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-label">Cost Share</div>
-                                <div class="stat-value">${formatPercent(r.costShare)}</div>
+                                <div class="stat-label">Total Cost</div>
+                                <div class="stat-value">${formatCurrency(r.totalCost, currency)}</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-label">Avg Utilization</div>
+                                <div class="stat-label">Total Revenue</div>
+                                <div class="stat-value">${formatCurrency(r.totalRevenue, currency)}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">FTE Avg</div>
                                 <div class="stat-value">${formatPercent(r.avgUtilization)}</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-label">Uplift</div>
-                                <div class="stat-value">${r.uplift}%</div>
                             </div>
                         </div>
                     </div>
@@ -1497,29 +1592,32 @@
             // Summary section
             csv += 'APM / MARGIN CALCULATOR REPORT\n';
             csv += `Report Currency,${currency}\n`;
-            csv += `Contract Duration,${results.contractDuration} months\n\n`;
+            csv += `Contract Duration,${results.contractDuration} months\n`;
+            csv += `Cost Buffer,${results.bufferPercent}%\n\n`;
 
             csv += 'SUMMARY\n';
             csv += `Total Revenue,${results.totalRevenue.toFixed(2)}\n`;
             csv += `Monthly Revenue (avg),${results.monthlyRevenue.toFixed(2)}\n`;
-            csv += `Total Base Cost,${results.totalBaseCost.toFixed(2)}\n`;
-            csv += `Total Loaded Cost,${results.totalLoadedCost.toFixed(2)}\n`;
+            csv += `Total Resource Cost,${results.totalCost.toFixed(2)}\n`;
+            csv += `Total Cost (with Buffer),${results.totalCostWithBuffer.toFixed(2)}\n`;
             csv += `Gross Profit,${results.grossProfit.toFixed(2)}\n`;
             csv += `APM / Margin,${(results.apm * 100).toFixed(2)}%\n\n`;
 
             // Resources section
             csv += 'RESOURCES\n';
-            csv += 'Name,Base Cost,Loaded Cost,Cost Share,Avg Utilization,Uplift %,APM\n';
+            csv += 'Name,Role,Level,Cost Rate (monthly),Charge Rate (monthly),Total Cost,Total Revenue,FTE Avg,APM\n';
             results.resourceResults.forEach(r => {
-                csv += `${r.name},${r.totalBaseCost.toFixed(2)},${r.totalLoadedCost.toFixed(2)},${(r.costShare * 100).toFixed(2)}%,${(r.avgUtilization * 100).toFixed(2)}%,${r.uplift}%,${(r.apm * 100).toFixed(2)}%\n`;
+                const monthlyCost = r.totalCost / results.contractDuration;
+                const monthlyRevenue = r.totalRevenue / results.contractDuration;
+                csv += `${r.name},${r.role || ''},${r.level || ''},${monthlyCost.toFixed(2)},${monthlyRevenue.toFixed(2)},${r.totalCost.toFixed(2)},${r.totalRevenue.toFixed(2)},${(r.avgUtilization * 100).toFixed(2)}%,${(r.apm * 100).toFixed(2)}%\n`;
             });
             csv += '\n';
 
             // Monthly breakdown section
             csv += 'MONTHLY BREAKDOWN\n';
-            csv += 'Month,Revenue,Base Cost,Loaded Cost,Profit,APM\n';
+            csv += 'Month,Revenue,Cost,Cost with Buffer,Profit,APM\n';
             results.monthlyTotals.forEach(m => {
-                csv += `Month ${m.month},${m.revenue.toFixed(2)},${m.baseCost.toFixed(2)},${m.loadedCost.toFixed(2)},${m.profit.toFixed(2)},${(m.apm * 100).toFixed(2)}%\n`;
+                csv += `Month ${m.month},${m.revenue.toFixed(2)},${m.cost.toFixed(2)},${m.costWithBuffer.toFixed(2)},${m.profit.toFixed(2)},${(m.apm * 100).toFixed(2)}%\n`;
             });
             csv += '\n';
 
