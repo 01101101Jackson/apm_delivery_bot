@@ -1,0 +1,2 @@
+[console_scripts]
+apm-calc = apm_calculator.cli:main
