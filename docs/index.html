@@ -488,43 +488,28 @@
                 <h2 class="card-title">Input Parameters</h2>
 
                 <form id="calculator-form">
-                    <!-- Revenue Section -->
+                    <!-- Project Duration Section -->
                     <div class="form-section">
-                        <div class="section-title">Revenue</div>
+                        <div class="section-title">Project Setup</div>
 
-                        <div class="form-group">
-                            <label for="revenue-type">Revenue Input Type</label>
-                            <select id="revenue-type" required>
-                                <option value="hourly">Hourly Rate</option>
-                                <option value="monthly" selected>Monthly</option>
-                                <option value="annual">Annual</option>
-                                <option value="fixed_price">Fixed Price Contract</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="revenue-amount">Revenue Amount</label>
-                            <div class="input-row">
-                                <input type="number" id="revenue-amount" min="0" step="0.01" required placeholder="e.g., 15000">
-                                <select id="revenue-currency" required>
-                                    <option value="USD" selected>USD</option>
-                                    <option value="EUR">EUR</option>
-                                    <option value="GBP">GBP</option>
-                                    <option value="CHF">CHF</option>
-                                    <option value="AUD">AUD</option>
-                                    <option value="CAD">CAD</option>
-                                    <option value="JPY">JPY</option>
-                                    <option value="SGD">SGD</option>
-                                    <option value="INR">INR</option>
-                                    <option value="CNY">CNY</option>
+                        <div class="input-row">
+                            <div class="form-group">
+                                <label for="revenue-type">Calculation Mode</label>
+                                <select id="revenue-type" required>
+                                    <option value="monthly" selected>Monthly Rates</option>
+                                    <option value="hourly">Hourly Rates</option>
+                                    <option value="annual">Annual Rates</option>
+                                    <option value="fixed_price">Fixed Duration Project</option>
                                 </select>
                             </div>
+                            <div class="form-group" id="contract-duration-group">
+                                <label for="contract-duration">Duration <span class="label-hint">(months)</span></label>
+                                <input type="number" id="contract-duration" min="1" max="36" step="1" placeholder="12" value="12">
+                            </div>
                         </div>
-
-                        <div class="form-group hidden" id="contract-duration-group">
-                            <label for="contract-duration">Contract Duration <span class="label-hint">(months)</span></label>
-                            <input type="number" id="contract-duration" min="1" max="36" step="1" placeholder="e.g., 6" value="">
-                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+                            Revenue is calculated from Rate Charged. Cost is calculated from Cost Rate.
+                        </p>
                     </div>
 
                     <!-- Settings Section -->
@@ -613,25 +598,25 @@
                         </div>
 
                         <div class="result-section">
-                            <div class="result-section-title">Revenue</div>
+                            <div class="result-section-title">Revenue (from Rate Charged)</div>
                             <div class="result-row">
-                                <span class="result-label">Total Revenue</span>
+                                <span class="result-label">Total Project Revenue</span>
                                 <span class="result-value" id="total-revenue">--</span>
                             </div>
                             <div class="result-row">
-                                <span class="result-label">Monthly (avg)</span>
+                                <span class="result-label">Monthly Average</span>
                                 <span class="result-value" id="avg-monthly-revenue">--</span>
                             </div>
                         </div>
 
                         <div class="result-section">
-                            <div class="result-section-title">Cost</div>
+                            <div class="result-section-title">Cost (from Cost Rate)</div>
                             <div class="result-row">
                                 <span class="result-label">Total Resource Cost</span>
                                 <span class="result-value" id="total-base-cost">--</span>
                             </div>
                             <div class="result-row">
-                                <span class="result-label">Total Cost (with Buffer)</span>
+                                <span class="result-label">Total Cost + Buffer</span>
                                 <span class="result-value" id="total-loaded-cost">--</span>
                             </div>
                         </div>
@@ -737,17 +722,8 @@
             }
         }
 
-        // Update contract duration visibility
+        // Update UI based on calculation mode
         function updateContractVisibility() {
-            const revenueType = document.getElementById('revenue-type').value;
-            const durationGroup = document.getElementById('contract-duration-group');
-
-            if (revenueType === 'fixed_price') {
-                durationGroup.classList.remove('hidden');
-            } else {
-                durationGroup.classList.add('hidden');
-            }
-
             updateAllocationBreakdowns();
         }
 
@@ -1211,58 +1187,28 @@
 
         function calculate() {
             const revenueType = document.getElementById('revenue-type').value;
-            const revenueAmount = parseFloat(document.getElementById('revenue-amount').value);
-            const revenueCurrency = document.getElementById('revenue-currency').value;
-            const contractDuration = parseInt(document.getElementById('contract-duration').value) || 0;
+            const contractDuration = parseInt(document.getElementById('contract-duration').value) || 12;
             const hoursPerMonth = parseFloat(document.getElementById('hours-per-month').value) || 160;
             const reportingCurrency = document.getElementById('reporting-currency').value;
 
-            if (isNaN(revenueAmount) || revenueAmount <= 0) {
-                throw new Error('Please enter a valid revenue amount greater than zero');
-            }
-            if (revenueType === 'fixed_price' && (!contractDuration || contractDuration < 1)) {
-                throw new Error('Please enter a valid contract duration for fixed price');
+            if (!contractDuration || contractDuration < 1) {
+                throw new Error('Please enter a valid project duration (minimum 1 month)');
             }
             if (resources.length === 0) {
                 throw new Error('Please add at least one resource');
             }
 
-            let calcDuration = contractDuration;
-            if (revenueType !== 'fixed_price') {
-                calcDuration = 12;
-            }
-
-            const revenueAmountUSD = convertToUSD(revenueAmount, revenueCurrency);
-            let totalRevenueUSD, monthlyRevenueUSD;
-
-            switch (revenueType) {
-                case 'hourly':
-                    monthlyRevenueUSD = revenueAmountUSD * hoursPerMonth;
-                    totalRevenueUSD = monthlyRevenueUSD * calcDuration;
-                    break;
-                case 'monthly':
-                    monthlyRevenueUSD = revenueAmountUSD;
-                    totalRevenueUSD = monthlyRevenueUSD * calcDuration;
-                    break;
-                case 'annual':
-                    totalRevenueUSD = revenueAmountUSD * (calcDuration / 12);
-                    monthlyRevenueUSD = revenueAmountUSD / 12;
-                    break;
-                case 'fixed_price':
-                    totalRevenueUSD = revenueAmountUSD;
-                    monthlyRevenueUSD = totalRevenueUSD / calcDuration;
-                    break;
-            }
+            const calcDuration = contractDuration;
 
             const bufferPercent = parseFloat(document.getElementById('cost-buffer').value) / 100 || 0;
 
             const resourceResults = [];
-            let totalResourceCostUSD = 0;
-            let totalResourceRevenueUSD = 0;
+            let totalResourceCostUSD = 0;      // Sum of cost rates (our cost)
+            let totalResourceRevenueUSD = 0;   // Sum of rate charged (what we bill client)
             const monthlyTotals = [];
 
             for (let m = 0; m < calcDuration; m++) {
-                monthlyTotals.push({ month: m + 1, revenue: monthlyRevenueUSD, cost: 0, resourceRevenue: 0, resources: [] });
+                monthlyTotals.push({ month: m + 1, cost: 0, revenue: 0, resources: [] });
             }
 
             resources.forEach(resource => {
@@ -1278,7 +1224,7 @@
                 costs.monthlyCosts.forEach((mc, idx) => {
                     if (monthlyTotals[idx]) {
                         monthlyTotals[idx].cost += mc.cost;
-                        monthlyTotals[idx].resourceRevenue += mc.revenue;
+                        monthlyTotals[idx].revenue += mc.revenue;
                         monthlyTotals[idx].resources.push({
                             name: costs.name,
                             fte: mc.fte,
@@ -1289,24 +1235,23 @@
                 });
             });
 
-            // Apply buffer to total cost
+            // Revenue = total of rate charged (what we bill client)
+            // Cost = total of cost rate (our actual cost)
+            // Buffer applies only at the end on total cost
             const totalCostWithBufferUSD = totalResourceCostUSD * (1 + bufferPercent);
 
-            // Use fixed price revenue if set, otherwise use resource revenue total
-            const effectiveRevenueUSD = revenueType === 'fixed_price' ? totalRevenueUSD : totalResourceRevenueUSD;
-
-            // Overall APM = 1 - (Total Cost with Buffer / Total Revenue)
-            const apm = effectiveRevenueUSD > 0 ? 1 - (totalCostWithBufferUSD / effectiveRevenueUSD) : 0;
-            const grossProfitUSD = effectiveRevenueUSD - totalCostWithBufferUSD;
+            // Overall APM = 1 - (Total Cost with Buffer / Total Revenue from Rate Charged)
+            const apm = totalResourceRevenueUSD > 0 ? 1 - (totalCostWithBufferUSD / totalResourceRevenueUSD) : 0;
+            const grossProfitUSD = totalResourceRevenueUSD - totalCostWithBufferUSD;
 
             return {
                 reportingCurrency,
                 revenueType,
                 contractDuration: calcDuration,
                 bufferPercent: bufferPercent * 100,
-                totalRevenue: convertFromUSD(effectiveRevenueUSD, reportingCurrency),
-                totalRevenueUSD: effectiveRevenueUSD,
-                monthlyRevenue: convertFromUSD(effectiveRevenueUSD / calcDuration, reportingCurrency),
+                totalRevenue: convertFromUSD(totalResourceRevenueUSD, reportingCurrency),
+                totalRevenueUSD: totalResourceRevenueUSD,
+                monthlyRevenue: convertFromUSD(totalResourceRevenueUSD / calcDuration, reportingCurrency),
                 totalCost: convertFromUSD(totalResourceCostUSD, reportingCurrency),
                 totalCostWithBuffer: convertFromUSD(totalCostWithBufferUSD, reportingCurrency),
                 totalCostWithBufferUSD: totalCostWithBufferUSD,
@@ -1328,11 +1273,11 @@
                 })),
                 monthlyTotals: monthlyTotals.map(m => ({
                     month: m.month,
-                    revenue: convertFromUSD(m.resourceRevenue, reportingCurrency),
+                    revenue: convertFromUSD(m.revenue, reportingCurrency),
                     cost: convertFromUSD(m.cost, reportingCurrency),
                     costWithBuffer: convertFromUSD(m.cost * (1 + bufferPercent), reportingCurrency),
-                    profit: convertFromUSD(m.resourceRevenue - m.cost * (1 + bufferPercent), reportingCurrency),
-                    apm: m.resourceRevenue > 0 ? 1 - (m.cost * (1 + bufferPercent) / m.resourceRevenue) : 0
+                    profit: convertFromUSD(m.revenue - m.cost * (1 + bufferPercent), reportingCurrency),
+                    apm: m.revenue > 0 ? 1 - (m.cost * (1 + bufferPercent) / m.revenue) : 0
                 }))
             };
         }
