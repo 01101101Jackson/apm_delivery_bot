@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APM / Margin Calculator</title>
+    <title>Project Price Calculator</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -478,8 +478,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>APM / Margin Calculator</h1>
-            <p class="subtitle">Calculate project margin with multi-resource and time-phased allocation</p>
+            <h1>Project Price Calculator</h1>
+            <p class="subtitle">Calculate fixed price project costs, revenue, and margins</p>
         </header>
 
         <div class="app-layout">
@@ -494,21 +494,16 @@
 
                         <div class="input-row">
                             <div class="form-group">
-                                <label for="revenue-type">Calculation Mode</label>
-                                <select id="revenue-type" required>
-                                    <option value="monthly" selected>Monthly Rates</option>
-                                    <option value="hourly">Hourly Rates</option>
-                                    <option value="annual">Annual Rates</option>
-                                    <option value="fixed_price">Fixed Duration Project</option>
-                                </select>
+                                <label for="contract-duration">Project Duration <span class="label-hint">(weeks)</span></label>
+                                <input type="number" id="contract-duration" min="1" max="104" step="1" placeholder="12" value="12">
                             </div>
-                            <div class="form-group" id="contract-duration-group">
-                                <label for="contract-duration">Duration <span class="label-hint">(months)</span></label>
-                                <input type="number" id="contract-duration" min="1" max="36" step="1" placeholder="12" value="12">
+                            <div class="form-group">
+                                <label for="revenue-buffer">Revenue Buffer % <span class="label-hint">(added to total)</span></label>
+                                <input type="number" id="revenue-buffer" min="0" step="0.1" value="0">
                             </div>
                         </div>
                         <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
-                            Revenue is calculated from Rate Charged. Cost is calculated from Cost Rate.
+                            Fixed price basis. Revenue from Rate Charged + Buffer. Cost from Cost Rate.
                         </p>
                     </div>
 
@@ -517,10 +512,6 @@
                         <div class="section-title">Settings</div>
 
                         <div class="input-row">
-                            <div class="form-group hidden" id="hours-per-month-group">
-                                <label for="hours-per-month">Hours/Month</label>
-                                <input type="number" id="hours-per-month" min="1" step="1" value="160" required>
-                            </div>
                             <div class="form-group">
                                 <label for="reporting-currency">Report Currency</label>
                                 <select id="reporting-currency" required>
@@ -537,8 +528,12 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="cost-buffer">Cost Buffer % <span class="label-hint">(overhead on total)</span></label>
-                                <input type="number" id="cost-buffer" min="0" step="0.1" value="0">
+                                <label for="hours-per-day">Hours per Day</label>
+                                <input type="number" id="hours-per-day" min="1" max="24" step="0.5" value="8">
+                            </div>
+                            <div class="form-group">
+                                <label for="days-per-week">Days per Week</label>
+                                <input type="number" id="days-per-week" min="1" max="7" step="0.5" value="5">
                             </div>
                         </div>
                     </div>
@@ -573,16 +568,16 @@
                         <div class="error-message" id="error-message"></div>
                     </div>
 
-                    <!-- APM Display -->
+                    <!-- Margin Display -->
                     <div class="apm-display" id="apm-display">
-                        <div class="apm-label">Project APM / Margin</div>
+                        <div class="apm-label">Project Margin</div>
                         <div class="apm-value" id="apm-value">--%</div>
                     </div>
 
                     <!-- Summary tabs -->
                     <div class="tabs">
                         <button type="button" class="tab active" onclick="showTab('summary')">Summary</button>
-                        <button type="button" class="tab" onclick="showTab('monthly')">Monthly</button>
+                        <button type="button" class="tab" onclick="showTab('monthly')">Weekly</button>
                         <button type="button" class="tab" onclick="showTab('resources')">Resources</button>
                         <button type="button" class="tab" onclick="showTab('gantt')">Gantt</button>
                     </div>
@@ -598,13 +593,13 @@
                         </div>
 
                         <div class="result-section">
-                            <div class="result-section-title">Revenue (from Rate Charged)</div>
+                            <div class="result-section-title">Revenue (Rate Charged + Buffer)</div>
                             <div class="result-row">
-                                <span class="result-label">Total Project Revenue</span>
+                                <span class="result-label">Total Project Price</span>
                                 <span class="result-value" id="total-revenue">--</span>
                             </div>
                             <div class="result-row">
-                                <span class="result-label">Monthly Average</span>
+                                <span class="result-label">Weekly Average</span>
                                 <span class="result-value" id="avg-monthly-revenue">--</span>
                             </div>
                         </div>
@@ -616,7 +611,7 @@
                                 <span class="result-value" id="total-base-cost">--</span>
                             </div>
                             <div class="result-row">
-                                <span class="result-label">Total Cost + Buffer</span>
+                                <span class="result-label">Base Revenue (before buffer)</span>
                                 <span class="result-value" id="total-loaded-cost">--</span>
                             </div>
                         </div>
@@ -656,15 +651,15 @@
 
                     <div class="formula-box">
                         <strong>Formula:</strong>
-                        <code>Resource APM = 1 − (Cost Rate / Charge Rate)</code> |
-                        <code>Total APM = 1 − (Total Cost × (1 + Buffer%) / Total Revenue)</code>
+                        <code>Resource Margin = 1 − (Cost Rate / Charge Rate)</code> |
+                        <code>Total Margin = 1 − (Total Cost / (Total Revenue × (1 + Buffer%)))</code>
                     </div>
                 </div>
             </div>
         </div>
 
         <footer>
-            <p>APM / Margin Calculator</p>
+            <p>Project Price Calculator</p>
         </footer>
     </div>
 
@@ -675,10 +670,18 @@
             CAD: 0.74, JPY: 0.0067, SGD: 0.75, INR: 0.012, CNY: 0.14,
         };
 
-        // Chart colors
+        // Chart colors - highly distinguishable
         const CHART_COLORS = [
-            '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-            '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
+            '#2563eb', // Blue
+            '#dc2626', // Red
+            '#7c3aed', // Purple
+            '#0891b2', // Cyan
+            '#c026d3', // Fuchsia
+            '#0d9488', // Teal
+            '#ca8a04', // Yellow
+            '#4f46e5', // Indigo
+            '#be123c', // Rose
+            '#15803d'  // Green
         ];
 
         const WEEKS_PER_MONTH = 4;
@@ -705,24 +708,7 @@
             return amount / EXCHANGE_RATES[toCurrency];
         }
 
-        // Update hours visibility
-        function updateHoursVisibility() {
-            const revenueType = document.getElementById('revenue-type').value;
-            const hoursGroup = document.getElementById('hours-per-month-group');
-
-            const hasHourlyResource = resources.some(r => {
-                const periodSelect = document.querySelector(`#resource-${r.id} select[name="period"]`);
-                return periodSelect && periodSelect.value === 'hourly';
-            });
-
-            if (revenueType === 'hourly' || hasHourlyResource) {
-                hoursGroup.classList.remove('hidden');
-            } else {
-                hoursGroup.classList.add('hidden');
-            }
-        }
-
-        // Update UI based on calculation mode
+        // Update UI when contract duration changes
         function updateContractVisibility() {
             updateAllocationBreakdowns();
         }
@@ -794,7 +780,6 @@
 
             resources.push(resource);
             renderResource(resource, showBreakdown, contractDuration);
-            updateHoursVisibility();
         }
 
         function renderResource(resource, showBreakdown, contractDuration) {
@@ -833,49 +818,49 @@
                 </div>
                 <div class="resource-row-1">
                     <div class="form-group">
-                        <label>Role</label>
-                        <input type="text" name="role" placeholder="e.g., Developer">
-                    </div>
-                    <div class="form-group">
                         <label>Level</label>
                         <select name="level">
-                            <option value="junior">Junior</option>
-                            <option value="mid" selected>Mid</option>
-                            <option value="senior">Senior</option>
-                            <option value="lead">Lead</option>
-                            <option value="principal">Principal</option>
+                            <option value="L1">L1</option>
+                            <option value="L2">L2</option>
+                            <option value="L3" selected>L3</option>
+                            <option value="L4">L4</option>
+                            <option value="L5">L5</option>
+                            <option value="L6">L6</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Rate Period</label>
-                        <select name="period" required onchange="updateHoursVisibility()">
+                        <select name="period" required>
                             <option value="hourly">Hourly</option>
-                            <option value="monthly" selected>Monthly</option>
+                            <option value="daily" selected>Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
                             <option value="annual">Annual</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <select name="currency" required>
+                            <option value="USD" selected>USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="CHF">CHF</option>
+                            <option value="AUD">AUD</option>
+                            <option value="CAD">CAD</option>
                         </select>
                     </div>
                 </div>
                 <div class="resource-row-2">
                     <div class="form-group">
-                        <label>Cost Rate <span class="label-hint">(salary/cost)</span></label>
-                        <div class="input-row">
-                            <input type="number" name="rate" min="0" step="0.01" required placeholder="e.g., 5000" oninput="updateResourceAPM(${resource.id})">
-                            <select name="currency" required>
-                                <option value="USD" selected>USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="GBP">GBP</option>
-                                <option value="CHF">CHF</option>
-                                <option value="AUD">AUD</option>
-                                <option value="CAD">CAD</option>
-                            </select>
-                        </div>
+                        <label>Cost Rate <span class="label-hint">(your cost)</span></label>
+                        <input type="number" name="rate" min="0" step="0.01" required placeholder="e.g., 500" oninput="updateResourceAPM(${resource.id})">
                     </div>
                     <div class="form-group">
                         <label>Rate Charged <span class="label-hint">(to client)</span></label>
-                        <input type="number" name="rate-charged" min="0" step="0.01" required placeholder="e.g., 8000" oninput="updateResourceAPM(${resource.id})">
+                        <input type="number" name="rate-charged" min="0" step="0.01" required placeholder="e.g., 800" oninput="updateResourceAPM(${resource.id})">
                     </div>
                     <div class="form-group">
-                        <label>APM</label>
+                        <label>Margin</label>
                         <div class="apm-badge positive" id="resource-apm-${resource.id}">--%</div>
                     </div>
                     <div class="form-group">
@@ -936,7 +921,6 @@
             resources = resources.filter(r => r.id !== id);
             const element = document.getElementById(`resource-${id}`);
             if (element) element.remove();
-            updateHoursVisibility();
         }
 
         function toggleAllocationBreakdown(resourceId) {
@@ -1038,12 +1022,11 @@
                 if (oldCard) {
                     const savedValues = {
                         name: oldCard.querySelector('input[name="name"]')?.value || resource.name,
-                        role: oldCard.querySelector('input[name="role"]')?.value || '',
-                        level: oldCard.querySelector('select[name="level"]')?.value || 'mid',
+                        level: oldCard.querySelector('select[name="level"]')?.value || 'L3',
                         rate: oldCard.querySelector('input[name="rate"]')?.value || '',
                         rateCharged: oldCard.querySelector('input[name="rate-charged"]')?.value || '',
                         currency: oldCard.querySelector('select[name="currency"]')?.value || 'USD',
-                        period: oldCard.querySelector('select[name="period"]')?.value || 'monthly'
+                        period: oldCard.querySelector('select[name="period"]')?.value || 'daily'
                     };
 
                     resource.name = savedValues.name;
@@ -1054,7 +1037,6 @@
                     const newCard = document.getElementById(`resource-${resource.id}`);
                     if (newCard) {
                         newCard.querySelector('input[name="name"]').value = savedValues.name;
-                        newCard.querySelector('input[name="role"]').value = savedValues.role;
                         newCard.querySelector('select[name="level"]').value = savedValues.level;
                         newCard.querySelector('input[name="rate"]').value = savedValues.rate;
                         newCard.querySelector('input[name="rate-charged"]').value = savedValues.rateCharged;
@@ -1100,166 +1082,155 @@
             return {
                 id: resourceId,
                 name: card.querySelector('input[name="name"]')?.value || `Resource ${resourceId}`,
-                role: card.querySelector('input[name="role"]')?.value || '',
-                level: card.querySelector('select[name="level"]')?.value || 'mid',
+                level: card.querySelector('select[name="level"]')?.value || 'L3',
                 color: resource?.color || CHART_COLORS[0],
                 rate: rate,
                 rateCharged: rateCharged,
                 currency: card.querySelector('select[name="currency"]')?.value || 'USD',
-                period: card.querySelector('select[name="period"]')?.value || 'monthly',
-                monthlyAllocations: resource?.monthlyAllocations || {}
+                period: card.querySelector('select[name="period"]')?.value || 'daily',
+                weeklyAllocations: resource?.weeklyAllocations || {}
             };
         }
 
-        function calculateResourceCosts(resourceData, contractDuration, hoursPerMonth) {
+        function calculateResourceCosts(resourceData, durationWeeks, hoursPerDay, daysPerWeek) {
             const costRateUSD = convertToUSD(resourceData.rate, resourceData.currency);
             const chargeRateUSD = convertToUSD(resourceData.rateCharged, resourceData.currency);
 
-            let monthlyCostRateUSD, monthlyChargeRateUSD;
+            const hoursPerWeek = hoursPerDay * daysPerWeek;
+
+            // Convert all rates to weekly
+            let weeklyCostRateUSD, weeklyChargeRateUSD;
             switch (resourceData.period) {
                 case 'hourly':
-                    monthlyCostRateUSD = costRateUSD * hoursPerMonth;
-                    monthlyChargeRateUSD = chargeRateUSD * hoursPerMonth;
+                    weeklyCostRateUSD = costRateUSD * hoursPerWeek;
+                    weeklyChargeRateUSD = chargeRateUSD * hoursPerWeek;
+                    break;
+                case 'daily':
+                    weeklyCostRateUSD = costRateUSD * daysPerWeek;
+                    weeklyChargeRateUSD = chargeRateUSD * daysPerWeek;
+                    break;
+                case 'weekly':
+                    weeklyCostRateUSD = costRateUSD;
+                    weeklyChargeRateUSD = chargeRateUSD;
                     break;
                 case 'monthly':
-                    monthlyCostRateUSD = costRateUSD;
-                    monthlyChargeRateUSD = chargeRateUSD;
+                    weeklyCostRateUSD = costRateUSD / 4.33;
+                    weeklyChargeRateUSD = chargeRateUSD / 4.33;
                     break;
                 case 'annual':
-                    monthlyCostRateUSD = costRateUSD / 12;
-                    monthlyChargeRateUSD = chargeRateUSD / 12;
+                    weeklyCostRateUSD = costRateUSD / 52;
+                    weeklyChargeRateUSD = chargeRateUSD / 52;
                     break;
             }
 
-            const monthlyCosts = [];
-            const weeklyAllocations = [];
+            const weeklyCosts = [];
             let totalCost = 0;
             let totalRevenue = 0;
             let totalFTE = 0;
 
-            const duration = contractDuration || 12;
+            for (let w = 0; w < durationWeeks; w++) {
+                let weekFte = 1.0;
 
-            for (let m = 0; m < duration; m++) {
-                let monthFte = 1.0;
-                let weekFtes = [1.0, 1.0, 1.0, 1.0];
-
-                if (resourceData.monthlyAllocations[m]) {
-                    const alloc = resourceData.monthlyAllocations[m];
-                    if (alloc.useWeekly) {
-                        weekFtes = alloc.weeks;
-                        monthFte = alloc.weeks.reduce((a, b) => a + b, 0) / WEEKS_PER_MONTH;
-                    } else {
-                        monthFte = alloc.fte;
-                        weekFtes = [alloc.fte, alloc.fte, alloc.fte, alloc.fte];
-                    }
+                if (resourceData.weeklyAllocations && resourceData.weeklyAllocations[w] !== undefined) {
+                    weekFte = resourceData.weeklyAllocations[w];
                 }
 
-                const cost = monthlyCostRateUSD * monthFte;
-                const revenue = monthlyChargeRateUSD * monthFte;
+                const cost = weeklyCostRateUSD * weekFte;
+                const revenue = weeklyChargeRateUSD * weekFte;
 
-                monthlyCosts.push({ month: m + 1, fte: monthFte, cost, revenue, weeks: weekFtes });
-                weeklyAllocations.push(weekFtes);
+                weeklyCosts.push({ week: w + 1, fte: weekFte, cost, revenue });
 
                 totalCost += cost;
                 totalRevenue += revenue;
-                totalFTE += monthFte;
+                totalFTE += weekFte;
             }
 
-            const avgUtilization = totalFTE / duration;
-            // Resource APM = (Rate Charged - Rate) / Rate Charged = 1 - (Cost / Revenue)
-            const resourceAPM = totalRevenue > 0 ? 1 - (totalCost / totalRevenue) : 0;
+            const avgUtilization = totalFTE / durationWeeks;
+            // Resource Margin = (Rate Charged - Rate) / Rate Charged = 1 - (Cost / Revenue)
+            const resourceMargin = totalRevenue > 0 ? 1 - (totalCost / totalRevenue) : 0;
 
             return {
                 name: resourceData.name,
-                role: resourceData.role,
                 level: resourceData.level,
                 color: resourceData.color,
-                monthlyCosts,
-                weeklyAllocations,
+                weeklyCosts,
                 totalCost,
                 totalRevenue,
                 avgUtilization,
-                apm: resourceAPM
+                margin: resourceMargin
             };
         }
 
         let lastResults = null; // Store for export
 
         function calculate() {
-            const revenueType = document.getElementById('revenue-type').value;
-            const contractDuration = parseInt(document.getElementById('contract-duration').value) || 12;
-            const hoursPerMonth = parseFloat(document.getElementById('hours-per-month').value) || 160;
+            const durationWeeks = parseInt(document.getElementById('contract-duration').value) || 12;
+            const hoursPerDay = parseFloat(document.getElementById('hours-per-day').value) || 8;
+            const daysPerWeek = parseFloat(document.getElementById('days-per-week').value) || 5;
             const reportingCurrency = document.getElementById('reporting-currency').value;
+            const bufferPercent = parseFloat(document.getElementById('revenue-buffer').value) / 100 || 0;
 
-            if (!contractDuration || contractDuration < 1) {
-                throw new Error('Please enter a valid project duration (minimum 1 month)');
+            if (!durationWeeks || durationWeeks < 1) {
+                throw new Error('Please enter a valid project duration (minimum 1 week)');
             }
             if (resources.length === 0) {
                 throw new Error('Please add at least one resource');
             }
 
-            const calcDuration = contractDuration;
-
-            const bufferPercent = parseFloat(document.getElementById('cost-buffer').value) / 100 || 0;
-
             const resourceResults = [];
             let totalResourceCostUSD = 0;      // Sum of cost rates (our cost)
             let totalResourceRevenueUSD = 0;   // Sum of rate charged (what we bill client)
-            const monthlyTotals = [];
+            const weeklyTotals = [];
 
-            for (let m = 0; m < calcDuration; m++) {
-                monthlyTotals.push({ month: m + 1, cost: 0, revenue: 0, resources: [] });
+            for (let w = 0; w < durationWeeks; w++) {
+                weeklyTotals.push({ week: w + 1, cost: 0, revenue: 0, resources: [] });
             }
 
             resources.forEach(resource => {
                 const data = getResourceData(resource.id);
                 if (!data || data.rate <= 0 || data.rateCharged <= 0) return;
 
-                const costs = calculateResourceCosts(data, calcDuration, hoursPerMonth);
+                const costs = calculateResourceCosts(data, durationWeeks, hoursPerDay, daysPerWeek);
                 resourceResults.push(costs);
 
                 totalResourceCostUSD += costs.totalCost;
                 totalResourceRevenueUSD += costs.totalRevenue;
 
-                costs.monthlyCosts.forEach((mc, idx) => {
-                    if (monthlyTotals[idx]) {
-                        monthlyTotals[idx].cost += mc.cost;
-                        monthlyTotals[idx].revenue += mc.revenue;
-                        monthlyTotals[idx].resources.push({
+                costs.weeklyCosts.forEach((wc, idx) => {
+                    if (weeklyTotals[idx]) {
+                        weeklyTotals[idx].cost += wc.cost;
+                        weeklyTotals[idx].revenue += wc.revenue;
+                        weeklyTotals[idx].resources.push({
                             name: costs.name,
-                            fte: mc.fte,
-                            cost: mc.cost,
-                            revenue: mc.revenue
+                            fte: wc.fte,
+                            cost: wc.cost,
+                            revenue: wc.revenue
                         });
                     }
                 });
             });
 
-            // Revenue = total of rate charged (what we bill client)
-            // Cost = total of cost rate (our actual cost)
-            // Buffer applies only at the end on total cost
-            const totalCostWithBufferUSD = totalResourceCostUSD * (1 + bufferPercent);
+            // Buffer applies to total revenue (what we charge client)
+            const totalRevenueWithBufferUSD = totalResourceRevenueUSD * (1 + bufferPercent);
 
-            // Overall APM = 1 - (Total Cost with Buffer / Total Revenue from Rate Charged)
-            const apm = totalResourceRevenueUSD > 0 ? 1 - (totalCostWithBufferUSD / totalResourceRevenueUSD) : 0;
-            const grossProfitUSD = totalResourceRevenueUSD - totalCostWithBufferUSD;
+            // Overall Margin = (Total Revenue with Buffer - Total Cost) / Total Revenue with Buffer
+            const margin = totalRevenueWithBufferUSD > 0 ? 1 - (totalResourceCostUSD / totalRevenueWithBufferUSD) : 0;
+            const grossProfitUSD = totalRevenueWithBufferUSD - totalResourceCostUSD;
 
             return {
                 reportingCurrency,
-                revenueType,
-                contractDuration: calcDuration,
+                durationWeeks,
                 bufferPercent: bufferPercent * 100,
                 totalRevenue: convertFromUSD(totalResourceRevenueUSD, reportingCurrency),
-                totalRevenueUSD: totalResourceRevenueUSD,
-                monthlyRevenue: convertFromUSD(totalResourceRevenueUSD / calcDuration, reportingCurrency),
+                totalRevenueWithBuffer: convertFromUSD(totalRevenueWithBufferUSD, reportingCurrency),
+                totalRevenueWithBufferUSD: totalRevenueWithBufferUSD,
+                weeklyRevenue: convertFromUSD(totalRevenueWithBufferUSD / durationWeeks, reportingCurrency),
                 totalCost: convertFromUSD(totalResourceCostUSD, reportingCurrency),
-                totalCostWithBuffer: convertFromUSD(totalCostWithBufferUSD, reportingCurrency),
-                totalCostWithBufferUSD: totalCostWithBufferUSD,
+                totalCostUSD: totalResourceCostUSD,
                 grossProfit: convertFromUSD(grossProfitUSD, reportingCurrency),
-                apm,
+                margin,
                 resourceResults: resourceResults.map(r => ({
                     name: r.name,
-                    role: r.role,
                     level: r.level,
                     color: r.color,
                     totalCost: convertFromUSD(r.totalCost, reportingCurrency),
@@ -1267,17 +1238,15 @@
                     totalCostUSD: r.totalCost,
                     totalRevenueUSD: r.totalRevenue,
                     avgUtilization: r.avgUtilization,
-                    apm: r.apm,
-                    weeklyAllocations: r.weeklyAllocations,
-                    monthlyCosts: r.monthlyCosts
+                    margin: r.margin,
+                    weeklyCosts: r.weeklyCosts
                 })),
-                monthlyTotals: monthlyTotals.map(m => ({
-                    month: m.month,
-                    revenue: convertFromUSD(m.revenue, reportingCurrency),
-                    cost: convertFromUSD(m.cost, reportingCurrency),
-                    costWithBuffer: convertFromUSD(m.cost * (1 + bufferPercent), reportingCurrency),
-                    profit: convertFromUSD(m.revenue - m.cost * (1 + bufferPercent), reportingCurrency),
-                    apm: m.revenue > 0 ? 1 - (m.cost * (1 + bufferPercent) / m.revenue) : 0
+                weeklyTotals: weeklyTotals.map(w => ({
+                    week: w.week,
+                    revenue: convertFromUSD(w.revenue * (1 + bufferPercent), reportingCurrency),
+                    cost: convertFromUSD(w.cost, reportingCurrency),
+                    profit: convertFromUSD(w.revenue * (1 + bufferPercent) - w.cost, reportingCurrency),
+                    margin: w.revenue > 0 ? 1 - (w.cost / (w.revenue * (1 + bufferPercent))) : 0
                 }))
             };
         }
@@ -1292,8 +1261,8 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const totalCostWithBuffer = results.totalCostWithBufferUSD;
-            const totalRevenue = results.totalRevenueUSD;
+            const totalRevenue = results.totalRevenueWithBufferUSD;
+            const totalCost = results.totalCostUSD;
 
             if (totalRevenue <= 0) return;
 
@@ -1305,13 +1274,6 @@
                 data.push({ name: r.name, value: share, color: r.color });
                 usedCostShare += share;
             });
-
-            // Add buffer share if present
-            if (results.bufferPercent > 0) {
-                const bufferShare = usedCostShare * (results.bufferPercent / 100);
-                data.push({ name: 'Buffer', value: bufferShare, color: '#f59e0b' });
-                usedCostShare += bufferShare;
-            }
 
             const profitShare = Math.max(0, 1 - usedCostShare);
             if (profitShare > 0.001) {
@@ -1353,61 +1315,59 @@
         function displayResults(results) {
             const currency = results.reportingCurrency;
 
-            // APM Display
-            const apmDisplay = document.getElementById('apm-display');
-            const apmValue = document.getElementById('apm-value');
-            apmValue.textContent = formatPercent(results.apm);
+            // Margin Display
+            const marginDisplay = document.getElementById('apm-display');
+            const marginValue = document.getElementById('apm-value');
+            marginValue.textContent = formatPercent(results.margin);
 
-            apmDisplay.classList.remove('positive', 'negative', 'break-even');
-            if (results.apm > 0.01) {
-                apmDisplay.classList.add('positive');
-            } else if (results.apm < -0.01) {
-                apmDisplay.classList.add('negative');
+            marginDisplay.classList.remove('positive', 'negative', 'break-even');
+            if (results.margin > 0.01) {
+                marginDisplay.classList.add('positive');
+            } else if (results.margin < -0.01) {
+                marginDisplay.classList.add('negative');
             } else {
-                apmDisplay.classList.add('break-even');
+                marginDisplay.classList.add('break-even');
             }
 
             // Summary tab
-            document.getElementById('total-revenue').textContent = formatCurrency(results.totalRevenue, currency);
-            document.getElementById('avg-monthly-revenue').textContent = formatCurrency(results.monthlyRevenue, currency);
+            document.getElementById('total-revenue').textContent = formatCurrency(results.totalRevenueWithBuffer, currency);
+            document.getElementById('avg-monthly-revenue').textContent = formatCurrency(results.weeklyRevenue, currency);
             document.getElementById('total-base-cost').textContent = formatCurrency(results.totalCost, currency);
-            document.getElementById('total-loaded-cost').textContent = formatCurrency(results.totalCostWithBuffer, currency);
+            document.getElementById('total-loaded-cost').textContent = formatCurrency(results.totalRevenue, currency);
             document.getElementById('gross-profit').textContent = formatCurrency(results.grossProfit, currency);
-            document.getElementById('remaining-margin').textContent = formatPercent(results.apm);
+            document.getElementById('remaining-margin').textContent = formatPercent(results.margin);
 
             // Draw pie chart
             drawPieChart(results);
 
-            // Monthly tab
-            const monthlyContainer = document.getElementById('monthly-results');
-            let monthlyHTML = `
+            // Weekly tab
+            const weeklyContainer = document.getElementById('monthly-results');
+            let weeklyHTML = `
                 <div class="monthly-result-row header">
-                    <span>Month</span>
+                    <span>Week</span>
                     <span>Revenue</span>
-                    <span>Cost (+ Buffer)</span>
-                    <span>APM</span>
+                    <span>Cost</span>
+                    <span>Margin</span>
                 </div>
             `;
-            results.monthlyTotals.forEach(m => {
-                const apmClass = m.apm > 0.01 ? 'color: var(--success)' : (m.apm < -0.01 ? 'color: var(--danger)' : 'color: var(--warning)');
-                monthlyHTML += `
+            results.weeklyTotals.forEach(w => {
+                const marginClass = w.margin > 0.01 ? 'color: var(--success)' : (w.margin < -0.01 ? 'color: var(--danger)' : 'color: var(--warning)');
+                weeklyHTML += `
                     <div class="monthly-result-row">
-                        <span>Month ${m.month}</span>
-                        <span>${formatCurrency(m.revenue, currency)}</span>
-                        <span>${formatCurrency(m.costWithBuffer, currency)}</span>
-                        <span style="${apmClass}; font-weight: 600;">${formatPercent(m.apm)}</span>
+                        <span>Week ${w.week}</span>
+                        <span>${formatCurrency(w.revenue, currency)}</span>
+                        <span>${formatCurrency(w.cost, currency)}</span>
+                        <span style="${marginClass}; font-weight: 600;">${formatPercent(w.margin)}</span>
                     </div>
                 `;
             });
-            monthlyContainer.innerHTML = monthlyHTML;
+            weeklyContainer.innerHTML = weeklyHTML;
 
-            // Resources tab with enhanced details (name, role, level, rate, rate charged, APM, FTE avg)
+            // Resources tab
             const resourceContainer = document.getElementById('resource-results');
             let resourceHTML = '';
             results.resourceResults.forEach(r => {
-                const apmColor = r.apm > 0 ? 'var(--success)' : 'var(--danger)';
-                const levelLabel = r.level ? r.level.charAt(0).toUpperCase() + r.level.slice(1) : '';
-                const roleDisplay = r.role ? `${r.role}${levelLabel ? ' (' + levelLabel + ')' : ''}` : levelLabel;
+                const marginColor = r.margin > 0 ? 'var(--success)' : 'var(--danger)';
 
                 resourceHTML += `
                     <div class="resource-result-card">
@@ -1416,20 +1376,12 @@
                                 <span class="resource-color-dot" style="background: ${r.color};"></span>
                                 <div>
                                     <div>${r.name}</div>
-                                    ${roleDisplay ? `<div style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted);">${roleDisplay}</div>` : ''}
+                                    <div style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted);">${r.level}</div>
                                 </div>
                             </div>
-                            <div style="font-weight: 600; color: ${apmColor};">APM: ${formatPercent(r.apm)}</div>
+                            <div style="font-weight: 600; color: ${marginColor};">Margin: ${formatPercent(r.margin)}</div>
                         </div>
-                        <div class="resource-stats" style="grid-template-columns: repeat(5, 1fr);">
-                            <div class="stat-item">
-                                <div class="stat-label">Cost Rate</div>
-                                <div class="stat-value">${formatCurrency(r.totalCost / results.contractDuration, currency)}/mo</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-label">Charge Rate</div>
-                                <div class="stat-value">${formatCurrency(r.totalRevenue / results.contractDuration, currency)}/mo</div>
-                            </div>
+                        <div class="resource-stats" style="grid-template-columns: repeat(4, 1fr);">
                             <div class="stat-item">
                                 <div class="stat-label">Total Cost</div>
                                 <div class="stat-value">${formatCurrency(r.totalCost, currency)}</div>
@@ -1437,6 +1389,10 @@
                             <div class="stat-item">
                                 <div class="stat-label">Total Revenue</div>
                                 <div class="stat-value">${formatCurrency(r.totalRevenue, currency)}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Profit</div>
+                                <div class="stat-value">${formatCurrency(r.totalRevenue - r.totalCost, currency)}</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-label">FTE Avg</div>
@@ -1466,10 +1422,10 @@
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
         }
 
-        // Render Gantt chart showing resource utilization over months/weeks
+        // Render Gantt chart showing resource utilization over weeks
         function renderGanttChart(results) {
             const container = document.getElementById('gantt-container');
-            const duration = results.contractDuration;
+            const durationWeeks = results.durationWeeks;
             const resourceData = results.resourceResults;
 
             if (resourceData.length === 0) {
@@ -1477,15 +1433,11 @@
                 return;
             }
 
-            // Build header row with months and weeks
-            let headerRow1 = '<th class="resource-label">Resource</th>';
-            let headerRow2 = '<th class="resource-label"></th>';
-
-            for (let m = 0; m < duration; m++) {
-                headerRow1 += `<th colspan="4" style="background: ${m % 2 === 0 ? 'var(--primary-light)' : 'var(--bg)'};">Month ${m + 1}</th>`;
-                for (let w = 0; w < 4; w++) {
-                    headerRow2 += `<th class="week-header" style="background: ${m % 2 === 0 ? 'var(--primary-light)' : 'var(--bg)'};">W${w + 1}</th>`;
-                }
+            // Build header row with weeks
+            let headerRow = '<th class="resource-label">Resource</th>';
+            for (let w = 0; w < durationWeeks; w++) {
+                const bgColor = Math.floor(w / 4) % 2 === 0 ? 'var(--primary-light)' : 'var(--bg)';
+                headerRow += `<th class="week-header" style="background: ${bgColor};">W${w + 1}</th>`;
             }
 
             // Build data rows for each resource
@@ -1493,19 +1445,17 @@
             resourceData.forEach(resource => {
                 let row = `<td class="resource-label"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${resource.color}; margin-right: 0.5rem;"></span>${resource.name}</td>`;
 
-                for (let m = 0; m < duration; m++) {
-                    const weeks = resource.weeklyAllocations && resource.weeklyAllocations[m] ? resource.weeklyAllocations[m] : [1, 1, 1, 1];
-                    for (let w = 0; w < 4; w++) {
-                        const fte = weeks[w] || 0;
-                        const opacity = Math.min(1, Math.max(0.1, fte));
-                        const bgColor = fte > 0 ? resource.color : '#e5e7eb';
-                        const textColor = fte > 0.5 ? 'white' : (fte > 0 ? '#1e293b' : '#9ca3af');
-                        row += `<td class="gantt-cell" style="background: ${m % 2 === 0 ? '#f8fafc' : 'white'};">
-                            <div class="gantt-bar" style="background: ${bgColor}; opacity: ${opacity}; color: ${textColor};">
-                                ${fte > 0 ? (fte * 100).toFixed(0) + '%' : '-'}
-                            </div>
-                        </td>`;
-                    }
+                for (let w = 0; w < durationWeeks; w++) {
+                    const fte = resource.weeklyCosts && resource.weeklyCosts[w] ? resource.weeklyCosts[w].fte : 1;
+                    const opacity = Math.min(1, Math.max(0.1, fte));
+                    const bgColor = fte > 0 ? resource.color : '#e5e7eb';
+                    const textColor = fte > 0.5 ? 'white' : (fte > 0 ? '#1e293b' : '#9ca3af');
+                    const cellBg = Math.floor(w / 4) % 2 === 0 ? '#f8fafc' : 'white';
+                    row += `<td class="gantt-cell" style="background: ${cellBg};">
+                        <div class="gantt-bar" style="background: ${bgColor}; opacity: ${opacity}; color: ${textColor};">
+                            ${fte > 0 ? (fte * 100).toFixed(0) + '%' : '-'}
+                        </div>
+                    </td>`;
                 }
                 bodyRows += `<tr>${row}</tr>`;
             });
@@ -1513,8 +1463,7 @@
             container.innerHTML = `
                 <table class="gantt-chart">
                     <thead>
-                        <tr>${headerRow1}</tr>
-                        <tr>${headerRow2}</tr>
+                        <tr>${headerRow}</tr>
                     </thead>
                     <tbody>
                         ${bodyRows}
@@ -1535,56 +1484,32 @@
             let csv = '';
 
             // Summary section
-            csv += 'APM / MARGIN CALCULATOR REPORT\n';
+            csv += 'PROJECT PRICE CALCULATOR REPORT\n';
             csv += `Report Currency,${currency}\n`;
-            csv += `Contract Duration,${results.contractDuration} months\n`;
-            csv += `Cost Buffer,${results.bufferPercent}%\n\n`;
+            csv += `Project Duration,${results.durationWeeks} weeks\n`;
+            csv += `Revenue Buffer,${results.bufferPercent}%\n\n`;
 
             csv += 'SUMMARY\n';
-            csv += `Total Revenue,${results.totalRevenue.toFixed(2)}\n`;
-            csv += `Monthly Revenue (avg),${results.monthlyRevenue.toFixed(2)}\n`;
+            csv += `Total Project Price,${results.totalRevenueWithBuffer.toFixed(2)}\n`;
+            csv += `Base Revenue (before buffer),${results.totalRevenue.toFixed(2)}\n`;
+            csv += `Weekly Average,${results.weeklyRevenue.toFixed(2)}\n`;
             csv += `Total Resource Cost,${results.totalCost.toFixed(2)}\n`;
-            csv += `Total Cost (with Buffer),${results.totalCostWithBuffer.toFixed(2)}\n`;
             csv += `Gross Profit,${results.grossProfit.toFixed(2)}\n`;
-            csv += `APM / Margin,${(results.apm * 100).toFixed(2)}%\n\n`;
+            csv += `Margin,${(results.margin * 100).toFixed(2)}%\n\n`;
 
             // Resources section
             csv += 'RESOURCES\n';
-            csv += 'Name,Role,Level,Cost Rate (monthly),Charge Rate (monthly),Total Cost,Total Revenue,FTE Avg,APM\n';
+            csv += 'Name,Level,Total Cost,Total Revenue,Profit,FTE Avg,Margin\n';
             results.resourceResults.forEach(r => {
-                const monthlyCost = r.totalCost / results.contractDuration;
-                const monthlyRevenue = r.totalRevenue / results.contractDuration;
-                csv += `${r.name},${r.role || ''},${r.level || ''},${monthlyCost.toFixed(2)},${monthlyRevenue.toFixed(2)},${r.totalCost.toFixed(2)},${r.totalRevenue.toFixed(2)},${(r.avgUtilization * 100).toFixed(2)}%,${(r.apm * 100).toFixed(2)}%\n`;
+                csv += `${r.name},${r.level || ''},${r.totalCost.toFixed(2)},${r.totalRevenue.toFixed(2)},${(r.totalRevenue - r.totalCost).toFixed(2)},${(r.avgUtilization * 100).toFixed(2)}%,${(r.margin * 100).toFixed(2)}%\n`;
             });
             csv += '\n';
 
-            // Monthly breakdown section
-            csv += 'MONTHLY BREAKDOWN\n';
-            csv += 'Month,Revenue,Cost,Cost with Buffer,Profit,APM\n';
-            results.monthlyTotals.forEach(m => {
-                csv += `Month ${m.month},${m.revenue.toFixed(2)},${m.cost.toFixed(2)},${m.costWithBuffer.toFixed(2)},${m.profit.toFixed(2)},${(m.apm * 100).toFixed(2)}%\n`;
-            });
-            csv += '\n';
-
-            // Weekly allocation (Gantt data)
-            csv += 'WEEKLY ALLOCATION (FTE %)\n';
-            let weekHeader = 'Resource';
-            for (let m = 0; m < results.contractDuration; m++) {
-                for (let w = 0; w < 4; w++) {
-                    weekHeader += `,M${m + 1}W${w + 1}`;
-                }
-            }
-            csv += weekHeader + '\n';
-
-            results.resourceResults.forEach(r => {
-                let row = r.name;
-                for (let m = 0; m < results.contractDuration; m++) {
-                    const weeks = r.weeklyAllocations && r.weeklyAllocations[m] ? r.weeklyAllocations[m] : [1, 1, 1, 1];
-                    for (let w = 0; w < 4; w++) {
-                        row += `,${((weeks[w] || 0) * 100).toFixed(0)}%`;
-                    }
-                }
-                csv += row + '\n';
+            // Weekly breakdown section
+            csv += 'WEEKLY BREAKDOWN\n';
+            csv += 'Week,Revenue,Cost,Profit,Margin\n';
+            results.weeklyTotals.forEach(w => {
+                csv += `Week ${w.week},${w.revenue.toFixed(2)},${w.cost.toFixed(2)},${w.profit.toFixed(2)},${(w.margin * 100).toFixed(2)}%\n`;
             });
 
             // Create and download file
@@ -1592,7 +1517,7 @@
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `apm_margin_report_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute('download', `project_price_report_${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
@@ -1600,11 +1525,6 @@
         }
 
         // Event listeners
-        document.getElementById('revenue-type').addEventListener('change', function() {
-            updateContractVisibility();
-            updateHoursVisibility();
-        });
-
         document.getElementById('contract-duration').addEventListener('change', function() {
             updateAllocationBreakdowns();
         });
